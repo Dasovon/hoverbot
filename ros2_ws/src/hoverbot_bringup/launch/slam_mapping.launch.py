@@ -23,7 +23,7 @@ def generate_launch_description():
         ])
     )
     
-    # RPLidar node directly (delayed 5 seconds)
+    # RPLidar node directly (delayed 5 seconds) - minimal params
     rplidar_node = TimerAction(
         period=5.0,
         actions=[
@@ -34,9 +34,7 @@ def generate_launch_description():
                 output='screen',
                 parameters=[{
                     'serial_port': '/dev/ttyUSB0',
-                    'frame_id': 'laser',
-                    'angle_compensate': True,
-                    'scan_mode': 'Sensitivity'
+                    'frame_id': 'laser'
                 }]
             )
         ]
