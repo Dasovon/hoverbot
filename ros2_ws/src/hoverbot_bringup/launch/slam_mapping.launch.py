@@ -23,7 +23,7 @@ def generate_launch_description():
         ])
     )
     
-    # RPLidar node directly (delayed 5 seconds) - minimal params
+    # RPLidar node directly (delayed 5 seconds) - NO parameters
     rplidar_node = TimerAction(
         period=5.0,
         actions=[
@@ -31,11 +31,7 @@ def generate_launch_description():
                 package='rplidar_ros',
                 executable='rplidar_node',
                 name='rplidar_node',
-                output='screen',
-                parameters=[{
-                    'serial_port': '/dev/ttyUSB0',
-                    'frame_id': 'laser'
-                }]
+                output='screen'
             )
         ]
     )
