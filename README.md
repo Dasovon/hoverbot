@@ -1,319 +1,243 @@
 # HoverBot - Autonomous Indoor Mapping Robot
 
-Complete, working configurations for building an autonomous robot from a hoverboard platform.
+An autonomous mobile robot built on a hoverboard platform with ROS 2, RPLidar A1 for SLAM mapping, and Nav2 for autonomous navigation.
 
-## 🎯 What This Repository Contains
+## 🎯 Project Goals
 
-This repo has **everything you need** - complete working files for each component:
+- Map indoor environments autonomously using SLAM
+- Navigate mapped spaces avoiding obstacles
+- Reuse hoverboard motors and battery for cost-effective platform
+- Learn ROS 2, robotics software, and embedded systems
 
-- **`firmware/`** - Complete STM32 hoverboard controller configuration
-- **`raspberry-pi/`** - Complete Raspberry Pi setup and control scripts
-- **`ros2_ws/`** - Complete ROS 2 workspace with all packages
-- **`hardware/`** - Wiring diagrams and hardware documentation
-
-Each folder is **self-contained** with everything needed to make that component work.
-
----
-
-## 📁 Repository Structure
-
+## 🤖 System Overview
 ```
-hoverbot/
-│
-├── firmware/                      # STM32 Hoverboard Controller
-│   ├── config/
-│   │   └── config.h              # Complete working config.h
-│   ├── bin/
-│   │   └── firmware.bin          # Pre-compiled binary (ready to flash)
-│   ├── docs/
-│   │   ├── FIRMWARE.md           # Detailed configuration guide
-│   │   ├── FLASHING.md           # Step-by-step flashing guide
-│   │   └── PROTOCOL.md           # Serial protocol specification
-│   └── README.md                 # Firmware quick start
-│
-├── raspberry-pi/                  # Raspberry Pi Configuration
-│   ├── scripts/
-│   │   ├── hoverboard_control.py # Complete motor control script
-│   │   ├── test_serial.py        # Serial communication test
-│   │   └── setup_uart.sh         # UART setup script
-│   ├── config/
-│   │   ├── config.txt            # Boot configuration
-│   │   ├── cmdline.txt           # Boot command line
-│   │   └── udev-rules/           # USB device rules
-│   ├── docs/
-│   │   ├── SETUP.md              # Complete Pi setup guide
-│   │   ├── UART.md               # UART configuration details
-│   │   └── TROUBLESHOOTING.md    # Common issues and fixes
-│   └── README.md                 # Pi quick start
-│
-├── ros2_ws/                       # ROS 2 Workspace
-│   ├── src/
-│   │   ├── hoverbot_description/ # Robot URDF model
-│   │   ├── hoverbot_driver/      # Serial driver node
-│   │   ├── hoverbot_bringup/     # Launch files
-│   │   └── hoverbot_navigation/  # Navigation configs
-│   ├── docs/
-│   │   ├── ROS2_SETUP.md         # ROS 2 installation
-│   │   ├── PACKAGES.md           # Package documentation
-│   │   └── USAGE.md              # How to use the robot
-│   └── README.md                 # ROS 2 quick start
-│
-├── hardware/                      # Hardware Documentation
-│   ├── wiring/
-│   │   ├── uart_wiring.md        # UART connection guide
-│   │   ├── power_wiring.md       # Power distribution
-│   │   └── sensor_wiring.md      # Sensor connections
-│   ├── schematics/
-│   │   └── pinouts.md            # All connector pinouts
-│   ├── docs/
-│   │   ├── ASSEMBLY.md           # Hardware assembly guide
-│   │   └── BOM.md                # Bill of materials
-│   └── README.md                 # Hardware overview
-│
-├── docs/                          # General Documentation
-│   ├── QUICKSTART.md             # Get started in 10 minutes
-│   ├── JOURNAL.md                # Development log
-│   └── FAQ.md                    # Frequently asked questions
-│
-└── README.md                      # This file
+                    ┌─────────────────┐
+                    │  Raspberry Pi 4 │
+                    │  ROS 2 Humble   │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              │              │              │
+        ┌─────▼────┐   ┌────▼─────┐  ┌────▼────┐
+        │RPLidar A1│   │Hoverboard│  │ Network │
+        │  (USB)   │   │  (UART)  │  │  (WiFi) │
+        └──────────┘   └──────────┘  └─────────┘
+             │               │              │
+        360° Lidar    Differential      Dev Machine
+        Scanning      Drive Motors      (RViz/Control)
 ```
 
----
+## ✅ Current Status (Dec 27, 2025)
+
+**Software:** ✅ Complete and validated
+- Driver communicating with hoverboard (99.3% success rate)
+- RPLidar scanning and publishing data
+- SLAM Toolbox creating maps
+- Nav2 configured for autonomous navigation
+- Tmux automation for one-command startup
+- RViz real-time visualization working
+
+**Hardware:** ⏳ Assembly pending
+- Components tested individually
+- Bench testing successful
+- Awaiting physical robot construction
+
+## 🛠️ Hardware
+
+| Component | Model | Function | Status |
+|-----------|-------|----------|--------|
+| Computer | Raspberry Pi 4 (4GB) | Main controller | ✅ Working |
+| Motors | Hoverboard (EFeru firmware) | Differential drive | ✅ Working |
+| Lidar | RPLidar A1 | SLAM mapping | ✅ Working |
+| Platform | Hoverboard deck | Robot chassis | ⏳ Assembly needed |
+| Battery | Hoverboard 36V | Power supply | ✅ Working |
+
+### Wiring
+- **UART:** Pi GPIO14/15 (TX/RX) ↔ Hoverboard USART3 (115200 baud)
+- **Power:** Hoverboard battery → Pi via buck converter
+- **Lidar:** USB connection to Pi
+
+See `hardware/` for detailed wiring diagrams.
+
+## 💻 Software Stack
+
+- **OS:** Ubuntu 22.04 LTS Server (ARM64)
+- **ROS:** ROS 2 Humble Hawksbill
+- **SLAM:** SLAM Toolbox (Karto SLAM)
+- **Navigation:** Nav2 (Navigation2)
+- **Visualization:** RViz2
+- **Automation:** Tmux session management
+
+### ROS 2 Packages
+```
+hoverbot/ros2_ws/src/
+├── hoverbot_driver      # Serial communication with hoverboard
+├── hoverbot_bringup     # Launch files and configurations
+└── hoverbot_description # Robot URDF (future)
+```
 
 ## 🚀 Quick Start
 
-### Option 1: Flash and Go (10 minutes)
+### Prerequisites
+- Raspberry Pi 4 running Ubuntu 22.04 + ROS 2 Humble
+- RPLidar A1 connected via USB
+- Hoverboard with EFeru firmware via UART
+- Dev machine with ROS 2 Humble (for visualization)
 
-If you just want to get it working:
-
-1. **Flash firmware:**
-   ```bash
-   cd firmware/
-   # Follow firmware/README.md to flash bin/firmware.bin
-   ```
-
-2. **Setup Raspberry Pi:**
-   ```bash
-   cd raspberry-pi/
-   ./scripts/setup_uart.sh
-   ```
-
-3. **Test it:**
-   ```bash
-   python3 raspberry-pi/scripts/test_serial.py
-   ```
-
-### Option 2: Full Build (1-2 hours)
-
-For complete setup with ROS 2:
-
-1. Flash firmware (see `firmware/README.md`)
-2. Configure Raspberry Pi (see `raspberry-pi/README.md`)
-3. Build ROS 2 workspace (see `ros2_ws/README.md`)
-4. Wire hardware (see `hardware/README.md`)
-
-See `docs/QUICKSTART.md` for detailed walkthrough.
-
----
-
-## 🔧 Each Component is Self-Contained
-
-### Firmware Folder
-- **Complete `config.h`** with all working settings
-- **Pre-compiled `.bin`** ready to flash
-- **Detailed docs** explaining every setting
-- **No need to clone** the entire EFeru repo
-
-### Raspberry Pi Folder
-- **Working Python scripts** for motor control
-- **Complete config files** for boot and UART
-- **Setup scripts** to automate configuration
-- **Everything needed** for Pi to communicate with hoverboard
-
-### ROS 2 Workspace
-- **All packages** ready to build
-- **Launch files** pre-configured
-- **URDF model** complete
-- **Just `colcon build`** and run
-
-### Hardware Folder
-- **Wiring diagrams** with photos/drawings
-- **Pin mappings** for all connectors
-- **Assembly instructions** step-by-step
-- **BOM** with part numbers and links
-
----
-
-## 📋 What's Working
-
-### ✅ Firmware
-- Power button latches correctly (BOARD_VARIANT 1)
-- USART3 serial communication at 115200 baud
-- Tank steering for differential drive
-- Continuous feedback telemetry
-- Safety timeout with beeping
-
-### ✅ Raspberry Pi
-- UART configured and operational
-- Python control scripts validated
-- Motor commands working (forward/backward/turn)
-- Telemetry reading (battery, temp, speed)
-
-### ✅ Hardware
-- All wiring documented and tested
-- UART connection to right sideboard (5V tolerant)
-- Power distribution safe and stable
-- RPLidar A1 mounted and ready
-
-### ✅ ROS 2
-- URDF robot model complete
-- Packages building cleanly
-- Launch files operational
-- Ready for driver integration
-
----
-
-## 🎓 Documentation Philosophy
-
-Each folder has:
-
-1. **README.md** - Quick start for that component
-2. **docs/** - Detailed guides and troubleshooting
-3. **Working files** - No placeholders, everything functional
-
-You can work on **one component at a time** without dependencies on others.
-
----
-
-## 🔨 Hardware Requirements
-
-- **Hoverboard:** Single mainboard with STM32F103
-- **Computer:** Raspberry Pi 5 (4GB+)
-- **Sensor:** RPLidar A1
-- **Battery:** 36V 10S Li-ion
-- **Programmer:** ST-Link V2
-- **Cables:** Dupont wires for UART
-
-Full BOM in `hardware/docs/BOM.md`
-
----
-
-## 💡 Key Technical Details
-
-### Serial Protocol
-- **Packet:** 8 bytes (start, steer, speed, checksum)
-- **Checksum:** `start XOR steer XOR speed`
-- **Baud:** 115200
-- **Rate:** 50 Hz
-
-### Firmware Config
-- **BOARD_VARIANT:** 1 (critical!)
-- **TANK_STEERING:** Enabled
-- **USART3:** Right sideboard
-- **Timeout:** 800ms
-
-### Pi GPIO
-- **TX:** GPIO14 (Pin 8) → Hoverboard RX
-- **RX:** GPIO15 (Pin 10) → Hoverboard TX
-- **GND:** Pin 6 → Hoverboard GND
-
----
-
-## 🛠️ Development Status
-
-| Component | Status | Notes |
-|-----------|--------|-------|
-| Firmware | ✅ Complete | Validated and working |
-| Pi Scripts | ✅ Complete | Motor control functional |
-| Hardware | ✅ Complete | All connections tested |
-| ROS 2 URDF | ✅ Complete | Robot model ready |
-| ROS 2 Driver | 🔄 In Progress | Serial bridge needed |
-| SLAM | 📋 Planned | slam_toolbox config |
-| Navigation | 📋 Planned | Nav2 integration |
-
----
-
-## 📖 Usage Examples
-
-### Test Motor Control
+### One-Command Startup
 ```bash
-cd raspberry-pi/scripts/
-python3 test_serial.py
+# On dev machine
+cd ~/hoverbot/scripts
+./hoverbot_startup.sh
+
+# Reattach anytime
+tmux attach -t hoverbot
+
+# Stop everything
+tmux kill-session -t hoverbot
 ```
 
-### Launch ROS 2 Visualization
+This launches all components automatically:
+1. Hoverboard driver (odometry + motor control)
+2. Static transforms (base_link → laser)
+3. RPLidar node (lidar scanning)
+4. SLAM Toolbox (mapping)
+5. Teleop window (keyboard control)
+
+### Visualization
 ```bash
-cd ros2_ws/
+# On dev machine (after robot is running)
+rviz2
+
+# Add displays: TF, LaserScan, Map, Odometry
+# Watch real-time mapping!
+```
+
+### Save a Map
+```bash
+# After driving around and building a map
+ros2 run nav2_map_server map_saver_cli -f ~/maps/my_map
+```
+
+## 📚 Documentation
+
+All documentation in `docs/pi4/`:
+
+- **[PROJECT_STATUS.md](docs/pi4/PROJECT_STATUS.md)** - Complete project overview and current status
+- **[QUICK_START.md](docs/pi4/QUICK_START.md)** - Copy-paste startup commands
+- **[SLAM_TESTING_RESULTS.md](docs/pi4/SLAM_TESTING_RESULTS.md)** - Detailed test results
+- **[RVIZ_SETUP.md](docs/pi4/RVIZ_SETUP.md)** - Visualization setup guide
+- **[NAV2_SETUP.md](docs/pi4/NAV2_SETUP.md)** - Autonomous navigation guide
+
+## 🔧 Development Setup
+
+### Clone Repository
+```bash
+git clone https://github.com/Dasovon/hoverbot.git
+cd hoverbot
+git checkout pi4  # Pi 4 working branch
+```
+
+### Build on Raspberry Pi
+```bash
+cd ~/hoverbot/ros2_ws
+colcon build
 source install/setup.bash
-ros2 launch hoverbot_bringup state_publisher.launch.py
 ```
 
-### Flash New Firmware
+### Development Machine Setup
 ```bash
-cd firmware/
-# Edit config/config.h if needed
-# Flash bin/firmware.bin using ST-Link
+# Install ROS 2 Humble
+sudo apt install ros-humble-desktop
+
+# Install RViz
+sudo apt install ros-humble-rviz2
+
+# Configure for robot communication
+echo "export ROS_DOMAIN_ID=0" >> ~/.bashrc
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+source ~/.bashrc
 ```
 
----
+## 📊 Performance Metrics
 
-## 🆘 Getting Help
+| Metric | Target | Actual | Status |
+|--------|--------|--------|--------|
+| Serial Success Rate | >95% | 99.3% | ✅ |
+| Odometry Rate | 50 Hz | 50 Hz | ✅ |
+| Lidar Scan Rate | 10 Hz | 7 Hz | ⚠️ |
+| SLAM Map Rate | 0.1 Hz | 0.1 Hz | ✅ |
 
-1. Check the **component README** in each folder
-2. Look in **docs/** subfolder for detailed guides
-3. Read **docs/FAQ.md** for common questions
-4. Check **docs/JOURNAL.md** for issues we've solved
-5. Open an issue on GitHub
+## 🎓 Learning Resources
 
----
+This project covers:
+- ROS 2 ecosystem (nodes, topics, services, actions)
+- SLAM algorithms (Karto SLAM, loop closure)
+- Path planning (NavFn, DWB controller)
+- Differential drive kinematics
+- Sensor fusion (lidar + odometry)
+- Embedded systems (UART communication, firmware)
+- Robot visualization (RViz, TF frames)
+
+## 🐛 Known Issues
+
+1. **RPLidar Buffer Overflow** - Workaround via sequential launch with delays (tmux automation)
+2. **SLAM Initial Dropping** - Messages drop for ~5s during startup (self-resolves)
+3. **Map Save Timing** - Must time map_saver with 10s publish cycle
+
+See full issue list in `docs/pi4/PROJECT_STATUS.md`
+
+## 🗺️ Roadmap
+
+### Phase 1: Software (✅ Complete)
+- [x] Hoverboard serial driver
+- [x] RPLidar integration
+- [x] SLAM mapping
+- [x] Tmux automation
+- [x] RViz visualization
+- [x] Nav2 configuration
+
+### Phase 2: Hardware Assembly (⏳ Next)
+- [ ] Mount RPLidar on chassis
+- [ ] Secure wiring and components
+- [ ] Verify mechanical clearances
+- [ ] Add emergency stop button
+
+### Phase 3: Testing & Tuning
+- [ ] SLAM mapping in real environment
+- [ ] Odometry calibration
+- [ ] Nav2 parameter tuning
+- [ ] Obstacle avoidance testing
+
+### Phase 4: Advanced Features
+- [ ] Visual odometry (camera)
+- [ ] IMU integration
+- [ ] Web interface
+- [ ] Mobile app control
 
 ## 🤝 Contributing
 
-Each component folder is independent. You can improve:
-- Firmware configurations
-- Python control scripts
-- ROS 2 packages
-- Documentation
+This is a personal learning project, but suggestions and ideas are welcome! Open an issue or submit a PR.
 
-See individual README files for component-specific guidelines.
+## 📄 License
 
----
-
-## 📜 License
-
-- **Firmware:** GPL-3.0 (EFeru FOC firmware)
-- **Scripts & ROS packages:** MIT
-- **Documentation:** CC-BY-4.0
-
----
+MIT License - See LICENSE file
 
 ## 🙏 Acknowledgments
 
-- **EFeru** - Hoverboard FOC firmware
-- **ROS 2 Community** - Robotics framework
-- **Raspberry Pi Foundation** - Single-board computer
+- [EFeru Hoverboard Firmware](https://github.com/EmanuelFeru/hoverboard-firmware-hack-FOC) - Motor control firmware
+- [SLAMTEC](https://www.slamtec.com/) - RPLidar A1
+- [ROS 2](https://docs.ros.org/) - Robot Operating System
+- [Nav2](https://navigation.ros.org/) - Navigation framework
+- [SLAM Toolbox](https://github.com/SteveMacenski/slam_toolbox) - SLAM implementation
+
+## 📞 Contact
+
+- GitHub: [@Dasovon](https://github.com/Dasovon)
+- Repository: [github.com/Dasovon/hoverbot](https://github.com/Dasovon/hoverbot)
 
 ---
 
-## 🗺️ Project Roadmap
+**Built with ❤️ and lots of learning**
 
-- [x] Firmware configuration and flashing
-- [x] Serial communication protocol
-- [x] Raspberry Pi control scripts
-- [x] Hardware assembly and wiring
-- [x] ROS 2 workspace structure
-- [ ] ROS 2 serial driver node
-- [ ] RPLidar integration
-- [ ] SLAM mapping
-- [ ] Autonomous navigation
-
----
-
-**Each folder is self-contained and ready to use!**
-
-Pick the component you want to work on and dive in. Everything you need is right there.
-
----
-
-**Last Updated:** December 2024  
-**Status:** All components operational, ready for integration
+*Last updated: December 27, 2025*
