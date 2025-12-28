@@ -11,15 +11,12 @@ from launch.actions import (
     DeclareLaunchArgument,
     IncludeLaunchDescription,
     TimerAction,
-    RegisterEventHandler,
-    EmitEvent,
     LogInfo
 )
-from launch.event_handlers import OnProcessStart, OnProcessExit
-from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node, LifecycleNode
+from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
+from launch.conditions import IfCondition
 from ament_index_python.packages import get_package_share_directory
 import os
 
@@ -30,8 +27,8 @@ def generate_launch_description():
     driver_dir = get_package_share_directory('hoverbot_driver')
     
     # Launch arguments
-    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-    slam_enabled = LaunchConfiguration('slam', default='true')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    slam_enabled = LaunchConfiguration('slam')
     
     declare_sim_time_arg = DeclareLaunchArgument(
         'use_sim_time',
@@ -57,6 +54,7 @@ def generate_launch_description():
     tf_publisher = TimerAction(
         period=3.0,
         actions=[
+            LogInfo(msg='Starting static transform publisher...'),
             Node(
                 package='tf2_ros',
                 executable='static_transform_publisher',
@@ -77,10 +75,11 @@ def generate_launch_description():
     )
     
     # Component 3: RPLidar (starts after TF publisher)
-    # Wait 5 seconds total from start
+    # Wait 6 seconds total from start (INCREASED from 5s)
     rplidar_node = TimerAction(
-        period=5.0,
+        period=6.0,
         actions=[
+            LogInfo(msg='Starting RPLidar A1...'),
             Node(
                 package='rplidar_ros',
                 executable='rplidar_node',
@@ -91,18 +90,17 @@ def generate_launch_description():
                     'frame_id': 'laser',
                     'angle_compensate': True,
                     'scan_mode': 'Sensitivity'
-                }],
-                # Give it exclusive access to USB
-                prefix='nice -n -10'  # Higher priority
+                }]
             )
         ]
     )
     
     # Component 4: SLAM Toolbox (starts after RPLidar)
-    # Wait 8 seconds total from start
+    # Wait 10 seconds total from start (INCREASED from 8s)
     slam_node = TimerAction(
-        period=8.0,
+        period=10.0,
         actions=[
+            LogInfo(msg='Starting SLAM Toolbox...'),
             Node(
                 package='slam_toolbox',
                 executable='async_slam_toolbox_node',
@@ -112,7 +110,7 @@ def generate_launch_description():
                     os.path.join(bringup_dir, 'config', 'slam_toolbox_params.yaml'),
                     {'use_sim_time': use_sim_time}
                 ],
-                condition=LaunchConfiguration('slam')
+                condition=IfCondition(slam_enabled)
             )
         ]
     )
@@ -131,5 +129,7 @@ def generate_launch_description():
         driver_node,
         tf_publisher,
         rplidar_node,
-        slam_node
+        slam_node,
+        
+        LogInfo(msg='All components scheduled. Full startup in ~12 seconds.')
     ])
