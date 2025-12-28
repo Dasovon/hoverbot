@@ -290,6 +290,21 @@ ros2 launch hoverbot_bringup nav2_bringup.launch.py map:=/path/to/map.yaml
 5. ⏭️ Web interface for monitoring
 6. ⏭️ Mobile app control
 
+## Camera Integration Status
+
+**Hardware:** Pi Camera Module 2 installed (CSI connection)
+
+**Issue:** Incompatibility between Pi Camera Module 2 (requires libcamera) and ROS 2 Humble v4l2_camera package (legacy v4l2 only)
+
+**Resolution:** Need USB webcam for immediate integration, or experimental libcamera bridge
+
+**Ready when compatible camera available:**
+- ✅ ROS 2 camera packages installed
+- ✅ Boot configuration set
+- ✅ Launch file infrastructure ready
+
+See `docs/pi4/CAMERA_SETUP.md` for complete details.
+
 ## Key Learnings
 
 ### Firmware Configuration
