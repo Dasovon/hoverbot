@@ -25,11 +25,18 @@ def generate_launch_description():
     rplidar_dir = get_package_share_directory('rplidar_ros')
     
     # Arguments
-    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    serial_port = LaunchConfiguration('serial_port')
     
     declare_sim_time_arg = DeclareLaunchArgument(
         'use_sim_time',
         default_value='false'
+    )
+    
+    declare_serial_port_arg = DeclareLaunchArgument(
+        'serial_port',
+        default_value='/dev/ttyUSB1',
+        description='RPLidar serial port'
     )
     
     # 1. Driver (immediate)
@@ -67,7 +74,8 @@ def generate_launch_description():
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([
                     os.path.join(rplidar_dir, 'launch', 'rplidar_a1_launch.py')
-                ])
+                ]),
+                launch_arguments={'serial_port': serial_port}.items()
             )
         ]
     )
@@ -92,6 +100,7 @@ def generate_launch_description():
     
     return LaunchDescription([
         declare_sim_time_arg,
+        declare_serial_port_arg,
         LogInfo(msg='HoverBot Full Launch - Starting components with delays...'),
         
         driver_launch,
