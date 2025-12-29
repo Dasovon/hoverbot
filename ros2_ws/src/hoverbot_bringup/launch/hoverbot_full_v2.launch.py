@@ -2,6 +2,7 @@
 """
 HoverBot Full Launch - Version 2
 Uses rplidar's official launch file with proper timing
+Includes IMU integration
 """
 
 from launch import LaunchDescription
@@ -98,6 +99,19 @@ def generate_launch_description():
         ]
     )
     
+    # 5. IMU (11 seconds delay)
+    imu_launch = TimerAction(
+        period=11.0,
+        actions=[
+            LogInfo(msg='Starting BNO055 IMU...'),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([
+                    os.path.join(bringup_dir, 'launch', 'imu.launch.py')
+                ])
+            )
+        ]
+    )
+    
     return LaunchDescription([
         declare_sim_time_arg,
         declare_serial_port_arg,
@@ -107,6 +121,7 @@ def generate_launch_description():
         tf_static,
         rplidar_launch,
         slam_launch,
+        imu_launch,
         
-        LogInfo(msg='All components launched. System ready in ~12 seconds.')
+        LogInfo(msg='All components launched. System ready in ~13 seconds.')
     ])
