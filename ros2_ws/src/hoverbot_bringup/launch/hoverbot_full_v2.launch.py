@@ -69,7 +69,7 @@ def generate_launch_description():
     
     # 3. RPLidar via official launch (6 seconds delay - LONGER)
     rplidar_launch = TimerAction(
-        period=6.0,
+        period=8.0,
         actions=[
             LogInfo(msg='Starting RPLidar A1...'),
             IncludeLaunchDescription(
