@@ -1,0 +1,199 @@
+###############################################################################
+# HoverBot Extended Kalman Filter Configuration
+#
+# Fuses wheel odometry from hoverboard driver with IMU data from BNO055
+# to produce a more accurate pose estimate for navigation.
+#
+# Input sources:
+#   1. /odom (nav_msgs/Odometry) - from hoverbot_driver
+#      - Provides: linear velocity (x, y), angular velocity (yaw)
+#      - Good for: short-term velocity and position tracking
+#      - Weakness: accumulates drift over time
+#
+#   2. /bno055/imu (sensor_msgs/Imu) - from bno055_driver  
+#      - Provides: orientation (roll, pitch, yaw), angular velocity, linear accel
+#      - Good for: absolute orientation, detecting rotation
+#      - Weakness: accelerometer noise during movement
+#
+# Output:
+#   - /odometry/filtered (nav_msgs/Odometry) - fused estimate
+#   - odom → base_link transform (if publish_tf enabled)
+#
+# Tuning notes:
+#   - Start conservative with process noise
+#   - Monitor /diagnostics topic for covariance growth
+#   - Increase sensor weights (reduce covariance) for trusted sensors
+###############################################################################
+
+ekf_filter_node:
+  ros__parameters:
+    # -------------------------------------------------------------------------
+    # Basic Configuration
+    # -------------------------------------------------------------------------
+    frequency: 50.0              # Filter update rate (Hz) - match odometry rate
+    sensor_timeout: 0.1          # Declare sensor failed if no data for this long (s)
+    two_d_mode: true             # Robot operates on flat ground (constrains z, roll, pitch)
+    
+    # -------------------------------------------------------------------------
+    # Coordinate Frames
+    # -------------------------------------------------------------------------
+    # Transform chain: map → odom → base_link
+    # EKF handles: odom → base_link
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_link
+    world_frame: odom            # EKF estimates in odom frame
+    
+    # -------------------------------------------------------------------------
+    # Transform Publishing
+    # -------------------------------------------------------------------------
+    publish_tf: true             # Publish odom → base_link transform
+    publish_acceleration: false  # Don't publish acceleration estimates
+    
+    # -------------------------------------------------------------------------
+    # INPUT SOURCE 1: Wheel Odometry
+    # Topic: /odom
+    # Type: nav_msgs/Odometry
+    # -------------------------------------------------------------------------
+    odom0: /odom
+    
+    # Which measurements to use from odometry (15-element state vector)
+    # [x,  y,  z,  roll, pitch, yaw,  vx, vy, vz,  vroll, vpitch, vyaw,  ax, ay, az]
+    odom0_config: [
+      false, false, false,       # Position (x, y, z) - don't fuse, drift accumulates
+      false, false, false,       # Orientation (roll, pitch, yaw) - use IMU instead
+      true,  true,  false,       # Linear velocity (vx, vy, vz) - PRIMARY odometry use
+      false, false, true,        # Angular velocity (vroll, vpitch, vyaw) - use vyaw
+      false, false, false        # Linear acceleration (ax, ay, az) - don't use
+    ]
+    
+    odom0_differential: false    # Use absolute measurements (not velocity mode)
+    odom0_relative: false        # Measurements are in odom frame, not relative
+    odom0_queue_size: 10         # Buffer size for asynchronous processing
+    
+    # Odometry measurement uncertainty (covariance diagonal)
+    # Lower = more trust, higher = less trust
+    # These come from hoverbot_driver's odometry covariance
+    # Units: position (m²), orientation (rad²), velocity (m²/s² or rad²/s²)
+    odom0_pose_covariance: [
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+    ]
+    
+    odom0_twist_covariance: [
+      0.001, 0.0,   0.0,   0.0, 0.0, 0.0,    # vx: 0.001 (m/s)² - trust wheel odometry
+      0.0,   0.001, 0.0,   0.0, 0.0, 0.0,    # vy: 0.001 (m/s)² - differential drive
+      0.0,   0.0,   0.0,   0.0, 0.0, 0.0,    # vz: not used
+      0.0,   0.0,   0.0,   0.0, 0.0, 0.0,    # vroll: not used
+      0.0,   0.0,   0.0,   0.0, 0.0, 0.0,    # vpitch: not used  
+      0.0,   0.0,   0.0,   0.0, 0.0, 0.01    # vyaw: 0.01 (rad/s)² - moderate trust
+    ]
+    
+    # -------------------------------------------------------------------------
+    # INPUT SOURCE 2: IMU (BNO055)
+    # Topic: /bno055/imu
+    # Type: sensor_msgs/Imu
+    # -------------------------------------------------------------------------
+    imu0: /bno055/imu
+    
+    # Which measurements to use from IMU
+    # BNO055 provides fused orientation, so we trust its orientation heavily
+    imu0_config: [
+      false, false, false,       # Position - IMU doesn't measure position
+      true,  true,  true,        # Orientation (roll, pitch, yaw) - PRIMARY IMU use
+      false, false, false,       # Linear velocity - not reliable from integration
+      false, false, true,        # Angular velocity (vroll, vpitch, vyaw) - use vyaw
+      true,  true,  false        # Linear acceleration (ax, ay) - for dynamics, not az (gravity)
+    ]
+    
+    imu0_differential: false
+    imu0_relative: false
+    imu0_queue_size: 10
+    imu0_remove_gravitational_acceleration: true  # BNO055 reports gravity, remove it
+    
+    # IMU measurement uncertainty
+    # BNO055 in NDOF mode has excellent orientation fusion
+    imu0_pose_covariance: [
+      0.0, 0.0, 0.0, 0.0,   0.0,   0.0,
+      0.0, 0.0, 0.0, 0.0,   0.0,   0.0,
+      0.0, 0.0, 0.0, 0.0,   0.0,   0.0,
+      0.0, 0.0, 0.0, 0.001, 0.0,   0.0,      # roll: 0.001 rad² - good IMU
+      0.0, 0.0, 0.0, 0.0,   0.001, 0.0,      # pitch: 0.001 rad²
+      0.0, 0.0, 0.0, 0.0,   0.0,   0.005     # yaw: 0.005 rad² - slightly less trust (mag drift)
+    ]
+    
+    imu0_twist_covariance: [
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.02    # vyaw: 0.02 (rad/s)² - moderate gyro noise
+    ]
+    
+    imu0_linear_acceleration_covariance: [
+      0.1, 0.0, 0.0,    # ax: 0.1 (m/s²)² - accelerometer has some noise
+      0.0, 0.1, 0.0,    # ay: 0.1 (m/s²)²
+      0.0, 0.0, 0.0     # az: not used (gravity removed)
+    ]
+    
+    # -------------------------------------------------------------------------
+    # Process Noise Covariance
+    # Models how much we expect the state to change between updates
+    # Higher = allow more rapid state changes, lower = smoother but slower response
+    # -------------------------------------------------------------------------
+    # State vector order:
+    # [x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az]
+    process_noise_covariance: [
+      0.05,  0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,  # x
+      0.0,   0.05,  0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,  # y
+      0.0,   0.0,   0.06,  0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,  # z (not used, higher noise)
+      0.0,   0.0,   0.0,   0.03,  0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,  # roll
+      0.0,   0.0,   0.0,   0.0,   0.03,  0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,  # pitch
+      0.0,   0.0,   0.0,   0.0,   0.0,   0.06,  0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,  # yaw (indoor robot turns frequently)
+      0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.025, 0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,  # vx
+      0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.025, 0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,  # vy
+      0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.04,  0.0,   0.0,   0.0,   0.0,   0.0,   0.0,  # vz (not used)
+      0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.01,  0.0,   0.0,   0.0,   0.0,   0.0,  # vroll
+      0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.01,  0.0,   0.0,   0.0,   0.0,  # vpitch
+      0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.02,  0.0,   0.0,   0.0,  # vyaw
+      0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.01,  0.0,   0.0,  # ax
+      0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.01,  0.0,  # ay
+      0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.015 # az
+    ]
+    
+    # -------------------------------------------------------------------------
+    # Initial State Covariance
+    # How uncertain we are about the robot's initial state
+    # -------------------------------------------------------------------------
+    initial_estimate_covariance: [
+      1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # x: 1m² uncertainty
+      0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # y: 1m²
+      0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # z
+      0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # roll
+      0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # pitch
+      0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # yaw: 1 rad²
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # vx
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # vy
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # vz
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,  # vroll
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0,  # vpitch
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0,  # vyaw
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,  # ax
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,  # ay
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0   # az
+    ]
+    
+    # -------------------------------------------------------------------------
+    # Debugging and Diagnostics
+    # -------------------------------------------------------------------------
+    print_diagnostics: true      # Print filter stats to console
+    debug: false                 # Verbose debug output (use for tuning)
+    debug_out_file: /tmp/ekf_debug.txt  # Debug log file location
+    
+    # Publish diagnostics to /diagnostics topic for monitoring
+    # Watch for messages about sensor timeouts or high covariances

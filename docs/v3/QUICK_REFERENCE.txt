@@ -1,0 +1,192 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    HOVERBOT V3 - QUICK REFERENCE                          ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌─ STARTUP ──────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  Full System (Single Command):                                            │
+│    ros2 launch hoverbot_bringup hoverbot_full_v3.launch.py                │
+│                                                                            │
+│  Override Ports (Optional):                                               │
+│    ros2 launch hoverbot_bringup hoverbot_full_v3.launch.py \              │
+│      hoverboard_port:=/dev/ttyAMA0 \                                      │
+│      lidar_port:=/dev/ttyUSB1                                             │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ SHUTDOWN ─────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  Clean Stop:                                                               │
+│    Ctrl+C  (in launch terminal)                                           │
+│                                                                            │
+│  Force Kill Everything:                                                    │
+│    ~/hoverbot/scripts/hoverbot_shutdown.sh                                │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ DRIVING ──────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  Keyboard Teleop:                                                          │
+│    ros2 run teleop_twist_keyboard teleop_twist_keyboard                   │
+│      i/k = forward/backward                                               │
+│      j/l = turn left/right                                                │
+│      space = stop                                                         │
+│                                                                            │
+│  Manual Command:                                                           │
+│    ros2 topic pub /cmd_vel geometry_msgs/msg/Twist \                      │
+│      "{linear: {x: 0.1}, angular: {z: 0.0}}"                              │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ MONITORING ───────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  Check Update Rates:                                                       │
+│    ros2 topic hz /odom /scan /bno055/imu /odometry/filtered              │
+│      Expected: odom=50Hz, scan=10Hz, imu=20Hz, filtered=50Hz             │
+│                                                                            │
+│  Watch Odometry:                                                           │
+│    ros2 topic echo /odom                  # Raw wheels                    │
+│    ros2 topic echo /odometry/filtered     # Fused (wheels + IMU)          │
+│                                                                            │
+│  Check Transforms:                                                         │
+│    ros2 run tf2_tools view_frames                                         │
+│    evince frames.pdf  # View TF tree                                      │
+│                                                                            │
+│  IMU Quality Test:                                                         │
+│    ros2 run hoverbot_bringup test_imu_quality.py                          │
+│      Watch for: calibration=3/3, gyro bias < 0.05, gravity ~9.81         │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ VISUALIZATION ────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  RViz (Recommended):                                                       │
+│    rviz2 -d ~/hoverbot/config/hoverbot.rviz                               │
+│                                                                            │
+│  RViz (Default):                                                           │
+│    rviz2                                                                   │
+│      Add: LaserScan (/scan), Map (/map), TF, RobotModel                  │
+│      Set Fixed Frame: odom                                                │
+│                                                                            │
+│  Plot Topics (RQt):                                                        │
+│    ros2 run rqt_plot rqt_plot /odom/twist/twist/linear/x                 │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ MAPPING ──────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  Start Mapping (automatic with full launch):                              │
+│    # SLAM Toolbox launches at 10 seconds                                  │
+│    # Drive around to build map                                            │
+│                                                                            │
+│  Save Map:                                                                 │
+│    ros2 service call /slam_toolbox/save_map \                             │
+│      slam_toolbox/srv/SaveMap \                                           │
+│      "{name: {data: '/home/ryan/maps/my_map'}}"                           │
+│                                                                            │
+│  OR use map_saver:                                                         │
+│    ros2 run nav2_map_server map_saver_cli -f ~/maps/my_map               │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ DEBUGGING ────────────────────────────────────────────────────────────────┐
+│                                                                            │
+│  Check Serial Connection:                                                 │
+│    ls -l /dev/ttyAMA0 /dev/ttyUSB1                                        │
+│    sudo dmesg | grep tty                                                  │
+│                                                                            │
+│  Test Hoverboard Directly:                                                │
+│    ros2 launch hoverbot_driver hoverbot_driver.launch.py                 │
+│    ros2 topic echo /odom  # Should see data                               │
+│                                                                            │
+│  Test RPLidar Directly:                                                    │
+│    ros2 launch rplidar_ros rplidar_a1_launch.py                           │
+│    ros2 topic echo /scan  # Should see laser data                         │
+│                                                                            │
+│  Check Node Status:                                                        │
+│    ros2 node list                                                         │
+│    ros2 node info /hoverbot_driver                                        │
+│                                                                            │
+│  Monitor Diagnostics:                                                      │
+│    ros2 topic echo /diagnostics                                           │
+│      Look for errors in EKF or sensor messages                           │
+│                                                                            │
+│  Check Parameter Overrides:                                               │
+│    ros2 param dump /hoverbot_driver                                       │
+│      Verify serial_port: /dev/ttyAMA0                                     │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ IMPORTANT FILES ──────────────────────────────────────────────────────────┐
+│                                                                            │
+│  Launch Files:                                                             │
+│    ~/hoverbot/ros2_ws/src/hoverbot_bringup/launch/                        │
+│      ├── hoverbot_full_v3.launch.py          ← Main launch               │
+│      ├── imu.launch.py                        ← IMU only                  │
+│      └── hoverbot_full_v2.launch.py.backup   ← Old (broken) version      │
+│                                                                            │
+│  Configs:                                                                  │
+│    ~/hoverbot/ros2_ws/src/hoverbot_bringup/config/                        │
+│      ├── ekf.yaml                             ← Sensor fusion             │
+│      └── slam_toolbox_params.yaml            ← SLAM settings              │
+│                                                                            │
+│    ~/hoverbot/ros2_ws/src/hoverbot_driver/config/                         │
+│      └── hoverbot_driver.yaml                ← Driver settings            │
+│                                                                            │
+│  Scripts:                                                                  │
+│    ~/hoverbot/scripts/                                                     │
+│      └── hoverbot_shutdown.sh                ← Emergency stop             │
+│                                                                            │
+│    ~/hoverbot/ros2_ws/src/hoverbot_bringup/scripts/                       │
+│      └── test_imu_quality.py                 ← IMU diagnostics            │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ TROUBLESHOOTING CHECKLIST ────────────────────────────────────────────────┐
+│                                                                            │
+│  Problem: Hoverboard driver uses wrong port                               │
+│  ☑ Check: ros2 param dump /hoverbot_driver | grep serial_port            │
+│  ☑ Fix:   Edit hoverbot_full_v3.launch.py, verify hoverboard_port        │
+│  ☑ Clean: colcon build --cmake-clean-cache                               │
+│                                                                            │
+│  Problem: RPLidar buffer overflow                                         │
+│  ☑ Check: dmesg | grep "mismatch packet"                                 │
+│  ☑ Fix:   Increase rplidar_launch period to 10.0 seconds                 │
+│                                                                            │
+│  Problem: EKF not publishing /odometry/filtered                           │
+│  ☑ Check: ros2 topic list | grep filtered                                │
+│  ☑ Check: ros2 topic hz /odom /bno055/imu  (both must be publishing)     │
+│  ☑ Check: ros2 topic echo /diagnostics  (look for EKF errors)            │
+│  ☑ Fix:   Verify robot_localization is installed                         │
+│                                                                            │
+│  Problem: IMU calibration stuck at low values                             │
+│  ☑ Action: Move robot in figure-8 pattern for 30 seconds                 │
+│  ☑ Action: Rotate 360° on each axis for magnetometer                     │
+│  ☑ Check:  ros2 run hoverbot_bringup test_imu_quality.py                 │
+│                                                                            │
+│  Problem: System won't start                                              │
+│  ☑ Check: ~/hoverbot/scripts/hoverbot_shutdown.sh  (kill everything)     │
+│  ☑ Check: ls -l /dev/ttyAMA0 /dev/ttyUSB1  (devices exist?)              │
+│  ☑ Check: colcon build  (workspace built successfully?)                  │
+│  ☑ Check: source ~/hoverbot/ros2_ws/install/setup.bash                   │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ PERFORMANCE TARGETS ──────────────────────────────────────────────────────┐
+│                                                                            │
+│  ✓ Hoverboard odometry:         50 Hz  (/odom)                           │
+│  ✓ RPLidar scan:                10 Hz  (/scan)                           │
+│  ✓ IMU data:                    20 Hz  (/bno055/imu)                     │
+│  ✓ Fused odometry:              50 Hz  (/odometry/filtered)              │
+│  ✓ SLAM update:                0.1 Hz  (map)                             │
+│  ✓ System startup time:         ~12 s  (full launch)                     │
+│  ✓ Serial success rate:       99.3+%   (hoverboard UART)                 │
+│  ✓ IMU calibration:            3/3/3   (sys/gyro/accel)                  │
+│  ✓ Gyro bias:                 < 0.05   rad/s (stationary)                │
+│  ✓ Gravity measurement:      9.81±0.5  m/s² (accelerometer)              │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║  Version: 3.0  │  Last Updated: Dec 28, 2025  │  Platform: Pi4 + ROS 2   ║
+╚════════════════════════════════════════════════════════════════════════════╝
