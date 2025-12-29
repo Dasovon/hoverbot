@@ -32,7 +32,7 @@ def generate_launch_description():
             'i2c_bus': 1,
             'i2c_addr': 0x28,
             'frame_id': 'imu_link',
-            'data_query_frequency': 20.0,
+            'data_query_frequency': 20,
             'calib_status_frequency': 0.1,
             'operation_mode': 12,  # NDOF mode (9DOF fusion)
             'use_sim_time': use_sim_time
