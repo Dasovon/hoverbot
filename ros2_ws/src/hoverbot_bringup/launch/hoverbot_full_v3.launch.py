@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
-HoverBot Full Launch - Version 3 (FIXED)
+HoverBot Full Launch - Version 3 (with Camera)
+
+Changes from v3:
+- Added RealSense D435 camera integration
+- Camera static transform (base_link → camera_link)
+- Depth camera for enhanced obstacle detection
 
 Changes from v2:
 - Fixed serial port scoping bug by using explicit argument names
@@ -75,13 +80,13 @@ def generate_launch_description():
     )
     
     # ========================================================================
-    # COMPONENT 2: Static Transforms (2 second delay)
+    # COMPONENT 2: Static Transforms - Laser (2 second delay)
     # Wait for driver to initialize odometry frame
     # ========================================================================
-    tf_static = TimerAction(
+    tf_laser = TimerAction(
         period=2.0,
         actions=[
-            LogInfo(msg='[2s] Starting static transforms...'),
+            LogInfo(msg='[2s] Starting laser transform...'),
             Node(
                 package='tf2_ros',
                 executable='static_transform_publisher',
@@ -95,6 +100,33 @@ def generate_launch_description():
                     '--yaw', '0.0',
                     '--frame-id', 'base_link',
                     '--child-frame-id', 'laser'
+                ],
+                output='screen'
+            )
+        ]
+    )
+    
+    # ========================================================================
+    # COMPONENT 2b: Static Transforms - Camera (2.5 second delay)
+    # Camera mounted forward-facing on robot
+    # ========================================================================
+    tf_camera = TimerAction(
+        period=2.5,
+        actions=[
+            LogInfo(msg='[2.5s] Starting camera transform...'),
+            Node(
+                package='tf2_ros',
+                executable='static_transform_publisher',
+                name='base_to_camera_tf',
+                arguments=[
+                    '--x', '0.15',     # Camera 15cm forward of base_link
+                    '--y', '0.0',      # Centered
+                    '--z', '0.20',     # Camera 20cm above base_link
+                    '--roll', '0.0', 
+                    '--pitch', '0.0', 
+                    '--yaw', '0.0',
+                    '--frame-id', 'base_link',
+                    '--child-frame-id', 'camera_link'
                 ],
                 output='screen'
             )
@@ -139,7 +171,30 @@ def generate_launch_description():
     )
     
     # ========================================================================
-    # COMPONENT 5: RPLidar (8 second delay)
+    # COMPONENT 5: RealSense D435 Camera (8 second delay)
+    # Depth camera for enhanced 3D obstacle detection
+    # Note: Running on USB 2.1, depth-only mode for reliability
+    # ========================================================================
+    camera_launch = TimerAction(
+        period=8.0,
+        actions=[
+            LogInfo(msg='[8s] Starting RealSense D435 camera...'),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([
+                    '/opt/ros/humble/share/realsense2_camera/launch/rs_launch.py'
+                ]),
+                launch_arguments={
+                    'depth_module.depth_profile': '640x480x15',
+                    'rgb_camera.color_profile': '424x240x6',  # Low-res/low-fps to reduce USB bandwidth
+                    'enable_sync': 'true',
+                    'align_depth.enable': 'true'
+                }.items()
+            )
+        ]
+    )
+    
+    # ========================================================================
+    # COMPONENT 6: RPLidar (15 second delay)
     # CRITICAL: RPLidar needs longest delay to avoid buffer overflow
     # ========================================================================
     rplidar_launch = TimerAction(
@@ -157,7 +212,7 @@ def generate_launch_description():
     )
     
     # ========================================================================
-    # COMPONENT 6: SLAM Toolbox (10 second delay)
+    # COMPONENT 7: SLAM Toolbox (17 second delay)
     # Wait for all sensors to be publishing stable data
     # ========================================================================
     slam_launch = TimerAction(
@@ -188,41 +243,53 @@ def generate_launch_description():
         
         # Startup message
         LogInfo(msg='╔════════════════════════════════════════════════════════════╗'),
-        LogInfo(msg='║         HoverBot Full System Launch - Version 3           ║'),
+        LogInfo(msg='║      HoverBot Full System Launch - Version 3 + Camera     ║'),
         LogInfo(msg='╚════════════════════════════════════════════════════════════╝'),
         LogInfo(msg=''),
         LogInfo(msg='Startup sequence:'),
-        LogInfo(msg='  [0s]  Hoverboard driver'),
-        LogInfo(msg='  [2s]  Static transforms'),
-        LogInfo(msg='  [3s]  IMU (BNO055)'),
-        LogInfo(msg='  [5s]  Sensor fusion (EKF)'),
-        LogInfo(msg='  [8s]  RPLidar A1'),
-        LogInfo(msg='  [10s] SLAM Toolbox'),
+        LogInfo(msg='  [0s]   Hoverboard driver'),
+        LogInfo(msg='  [2s]   Static transforms (laser)'),
+        LogInfo(msg='  [2.5s] Static transforms (camera)'),
+        LogInfo(msg='  [3s]   IMU (BNO055)'),
+        LogInfo(msg='  [5s]   Sensor fusion (EKF)'),
+        LogInfo(msg='  [8s]   RealSense D435 camera'),
+        LogInfo(msg='  [15s]  RPLidar A1'),
+        LogInfo(msg='  [17s]  SLAM Toolbox'),
         LogInfo(msg=''),
-        LogInfo(msg='System will be fully operational in ~12 seconds.'),
+        LogInfo(msg='System will be fully operational in ~19 seconds.'),
         LogInfo(msg=''),
         
         # Components (in order)
         driver_launch,
-        tf_static,
+        tf_laser,
+        tf_camera,
         imu_launch,
         sensor_fusion,
+        camera_launch,
         rplidar_launch,
         slam_launch,
         
         # Ready message
         TimerAction(
-            period=12.0,
+            period=19.0,
             actions=[
                 LogInfo(msg=''),
                 LogInfo(msg='╔════════════════════════════════════════════════════════════╗'),
                 LogInfo(msg='║                    SYSTEM READY ✓                         ║'),
                 LogInfo(msg='╚════════════════════════════════════════════════════════════╝'),
                 LogInfo(msg=''),
+                LogInfo(msg='Active sensors:'),
+                LogInfo(msg='  ✓ Hoverboard odometry (50 Hz)'),
+                LogInfo(msg='  ✓ BNO055 IMU (20 Hz)'),
+                LogInfo(msg='  ✓ RealSense D435 depth (15 Hz)'),
+                LogInfo(msg='  ✓ RPLidar A1 scan (7-10 Hz)'),
+                LogInfo(msg='  ✓ Sensor fusion (EKF)'),
+                LogInfo(msg='  ✓ SLAM mapping'),
+                LogInfo(msg=''),
                 LogInfo(msg='You can now:'),
                 LogInfo(msg='  • Drive: ros2 run teleop_twist_keyboard teleop_twist_keyboard'),
-                LogInfo(msg='  • Visualize: rviz2 -d ~/hoverbot/config/hoverbot.rviz'),
-                LogInfo(msg='  • Monitor: ros2 topic hz /scan /odom /bno055/imu'),
+                LogInfo(msg='  • Visualize: rviz2 (or ssh -X hoverbot, then rviz2)'),
+                LogInfo(msg='  • Monitor: ros2 topic hz /scan /odom /camera/camera/depth/image_rect_raw'),
                 LogInfo(msg='')
             ]
         )
