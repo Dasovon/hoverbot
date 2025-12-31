@@ -29,13 +29,18 @@ An autonomous mobile robot built on a hoverboard platform with ROS 2, RPLidar A1
 
 ## ✅ Current Status (Dec 31, 2024)
 
-**Software:** ✅ Complete and validated
+**Software:** ✅ Complete and validated (7 sensors integrated)
 - Driver communicating with hoverboard (99.3% success rate)
-- RPLidar scanning and publishing data
-- SLAM Toolbox creating maps
+- BNO055 IMU calibrated (9.80 m/s² gravity - perfect!)
+- Sensor fusion (EKF) fusing odometry + IMU at 50 Hz
+- RPLidar scanning and publishing data at 7.6 Hz
+- RealSense D435 publishing depth at 15 Hz
+- ELP USB camera publishing RGB at 30 Hz
+- SLAM Toolbox creating maps at 0.1 Hz
 - Nav2 configured for autonomous navigation
-- Tmux automation for one-command startup
+- Single-command V3 launch system
 - RViz real-time visualization working
+- Persistent device names (udev rules)
 
 **Hardware:** ⏳ Assembly pending
 - Components tested individually
@@ -48,7 +53,10 @@ An autonomous mobile robot built on a hoverboard platform with ROS 2, RPLidar A1
 |-----------|-------|----------|--------|
 | Computer | Raspberry Pi 4 (4GB) | Main controller | ✅ Working |
 | Motors | Hoverboard (EFeru firmware) | Differential drive | ✅ Working |
-| Lidar | RPLidar A1 | SLAM mapping | ✅ Working |
+| Lidar | RPLidar A1 | 2D SLAM mapping | ✅ Working |
+| IMU | Adafruit BNO055 | Orientation, sensor fusion | ✅ Working |
+| Depth Camera | Intel RealSense D435 | 3D obstacles (15 Hz) | ✅ Working |
+| RGB Camera | ELP USB GS1200P01 | Visual tasks (30 Hz) | ✅ Working |
 | Platform | Hoverboard deck | Robot chassis | ⏳ Assembly needed |
 | Battery | Hoverboard 36V | Power supply | ✅ Working |
 
@@ -56,6 +64,11 @@ An autonomous mobile robot built on a hoverboard platform with ROS 2, RPLidar A1
 - **UART:** Pi GPIO14/15 (TX/RX) ↔ Hoverboard USART3 (115200 baud)
 - **Power:** Hoverboard battery → Pi via buck converter
 - **Lidar:** USB connection to Pi
+
+### Additional Sensors
+- **IMU:** BNO055 via I2C (address 0x28)
+- **Depth Camera:** RealSense D435 via USB
+- **RGB Camera:** ELP GS1200P01 via USB (persistent /dev/elp_camera)
 
 See `hardware/` for detailed wiring diagrams.
 
