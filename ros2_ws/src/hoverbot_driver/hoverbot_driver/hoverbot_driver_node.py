@@ -18,6 +18,7 @@ from rclpy.duration import Duration
 from geometry_msgs.msg import Twist, TransformStamped, Quaternion
 from nav_msgs.msg import Odometry
 from diagnostic_msgs.msg import DiagnosticArray, DiagnosticStatus, KeyValue
+from std_msgs.msg import Bool
 from tf2_ros import TransformBroadcaster
 import math
 import time
@@ -88,6 +89,10 @@ class HoverBotDriverNode(Node):
         # Publishers
         self.odom_pub = self.create_publisher(Odometry, 'odom', 10)
         self.diag_pub = self.create_publisher(DiagnosticArray, '/diagnostics', 10)
+        self.activity_pub = self.create_publisher(Bool, '/robot_active', 10) 
+
+        # Activity message
+        self.activity_msg = Bool() 
         
         # TF broadcaster
         if self.publish_tf_flag:
@@ -131,6 +136,10 @@ class HoverBotDriverNode(Node):
         self.current_angular = msg.angular.z
         self.last_cmd_vel_time = self.get_clock().now()
         self.cmd_vel_received = True
+
+        # Signal robot is active (for LiDAR power management)
+        self.activity_msg.data = True
+        self.activity_pub.publish(self.activity_msg)
     
     def control_loop(self):
         """
@@ -155,6 +164,10 @@ class HoverBotDriverNode(Node):
             if self.cmd_vel_received:
                 self.get_logger().warn("cmd_vel timeout - stopping robot")
                 self.cmd_vel_received = False
+
+                # Signal robot is idle (stop LiDAR motor)
+                self.activity_msg.data = False
+                self.activity_pub.publish(self.activity_msg)
         else:
             # Use current commanded velocity
             linear_x = self.current_linear

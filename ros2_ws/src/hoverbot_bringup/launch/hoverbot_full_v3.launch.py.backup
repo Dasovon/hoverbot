@@ -219,19 +219,22 @@ def generate_launch_description():
     )
     
     # ========================================================================
-    # COMPONENT 6: RPLidar (15 second delay)
-    # CRITICAL: RPLidar needs longest delay to avoid buffer overflow
+    # COMPONENT 6: RPLidar A1 with Power Management (15 second delay)
+    # Intelligent motor control saves battery
     # ========================================================================
     rplidar_launch = TimerAction(
         period=15.0,
         actions=[
-            LogInfo(msg='[15s] Starting RPLidar A1...'),
+            LogInfo(msg='[15s] Starting RPLidar A1 with power management...'),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([
-                    os.path.join(rplidar_dir, 'launch', 'rplidar_a1_launch.py')
+                    os.path.join(bringup_dir, 'launch', 
+                            'lidar_power_management.launch.py')
                 ]),
-                # CRITICAL: Use the lidar-specific port argument
-                launch_arguments={'serial_port': lidar_port}.items()
+                launch_arguments={
+                    'serial_port': lidar_port,
+                    'activity_timeout': '30.0'
+                }.items()
             )
         ]
     )
@@ -278,7 +281,7 @@ def generate_launch_description():
         LogInfo(msg='  [3s]   IMU (BNO055)'),
         LogInfo(msg='  [5s]   Sensor fusion (EKF)'),
         LogInfo(msg='  [8s]   RealSense D435 camera'),
-        LogInfo(msg='  [15s]  RPLidar A1'),
+        LogInfo(msg='  [15s]  RPLidar A1 (with power management)'),
         LogInfo(msg='  [17s]  SLAM Toolbox'),
         LogInfo(msg=''),
         LogInfo(msg='System will be fully operational in ~19 seconds.'),
