@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-HoverBot Full Launch - Version 3 (with Camera)
+HoverBot Full Launch - Version 3 (with Dual Cameras)
 
 Changes from v3:
-- Added RealSense D435 camera integration
-- Camera static transform (base_link → camera_link)
-- Depth camera for enhanced obstacle detection
+- Added RealSense D435 camera (depth) for 3D obstacle detection
+- Added ELP USB camera (RGB) for visual tasks
+- Camera static transforms (base_link → camera_link)
+- Persistent device names via udev rules
 
 Changes from v2:
 - Fixed serial port scoping bug by using explicit argument names
@@ -18,7 +19,7 @@ Usage:
   
 Optional arguments:
   hoverboard_port:=/dev/ttyAMA0  (default)
-  lidar_port:=/dev/ttyUSB1       (default)
+  lidar_port:=/dev/rplidar       (default - persistent udev name)
 """
 
 from launch import LaunchDescription
@@ -62,7 +63,7 @@ def generate_launch_description():
     declare_lidar_port_arg = DeclareLaunchArgument(
         'lidar_port',
         default_value='/dev/rplidar',
-        description='RPLidar serial port (USB)'
+        description='RPLidar serial port (persistent udev link)'
     )
     
     # ========================================================================
@@ -178,17 +179,43 @@ def generate_launch_description():
     camera_launch = TimerAction(
         period=8.0,
         actions=[
-            LogInfo(msg='[8s] Starting RealSense D435 camera...'),
+            LogInfo(msg='[8s] Starting RealSense D435 (depth camera)...'),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([
                     '/opt/ros/humble/share/realsense2_camera/launch/rs_launch.py'
                 ]),
                 launch_arguments={
                     'depth_module.depth_profile': '640x480x15',
-                    'rgb_camera.color_profile': '424x240x6',  # Low-res/low-fps to reduce USB bandwidth
+                    'enable_color': 'false',  # Disable RGB - use ELP instead
                     'enable_sync': 'true',
                     'align_depth.enable': 'true'
                 }.items()
+            )
+        ]
+    )
+    
+    # ========================================================================
+    # COMPONENT 5b: ELP USB Camera (8.5 second delay)
+    # RGB camera for visual tasks - runs alongside RealSense depth
+    # Global shutter for motion clarity
+    # ========================================================================
+    elp_camera_launch = TimerAction(
+        period=8.5,
+        actions=[
+            LogInfo(msg='[8.5s] Starting ELP USB camera (RGB)...'),
+            Node(
+                package='usb_cam',
+                executable='usb_cam_node_exe',
+                name='elp_camera',
+                namespace='elp',
+                output='screen',
+                parameters=[
+                    os.path.join(bringup_dir, 'config', 'elp_camera.yaml')
+                ],
+                remappings=[
+                    ('image_raw', '/elp/image_raw'),
+                    ('camera_info', '/elp/camera_info')
+                ]
             )
         ]
     )
@@ -243,7 +270,7 @@ def generate_launch_description():
         
         # Startup message
         LogInfo(msg='╔════════════════════════════════════════════════════════════╗'),
-        LogInfo(msg='║      HoverBot Full System Launch - Version 3 + Camera     ║'),
+        LogInfo(msg='║    HoverBot Full System Launch - V3 + Dual Cameras        ║'),
         LogInfo(msg='╚════════════════════════════════════════════════════════════╝'),
         LogInfo(msg=''),
         LogInfo(msg='Startup sequence:'),
@@ -252,7 +279,8 @@ def generate_launch_description():
         LogInfo(msg='  [2.5s] Static transforms (camera)'),
         LogInfo(msg='  [3s]   IMU (BNO055)'),
         LogInfo(msg='  [5s]   Sensor fusion (EKF)'),
-        LogInfo(msg='  [8s]   RealSense D435 camera'),
+        LogInfo(msg='  [8s]   RealSense D435 (depth)'),
+        LogInfo(msg='  [8.5s] ELP USB camera (RGB)'),
         LogInfo(msg='  [15s]  RPLidar A1'),
         LogInfo(msg='  [17s]  SLAM Toolbox'),
         LogInfo(msg=''),
@@ -266,6 +294,7 @@ def generate_launch_description():
         imu_launch,
         sensor_fusion,
         camera_launch,
+        elp_camera_launch,
         rplidar_launch,
         slam_launch,
         
@@ -282,6 +311,7 @@ def generate_launch_description():
                 LogInfo(msg='  ✓ Hoverboard odometry (50 Hz)'),
                 LogInfo(msg='  ✓ BNO055 IMU (20 Hz)'),
                 LogInfo(msg='  ✓ RealSense D435 depth (15 Hz)'),
+                LogInfo(msg='  ✓ ELP USB camera RGB (30 Hz)'),
                 LogInfo(msg='  ✓ RPLidar A1 scan (7-10 Hz)'),
                 LogInfo(msg='  ✓ Sensor fusion (EKF)'),
                 LogInfo(msg='  ✓ SLAM mapping'),
@@ -289,7 +319,9 @@ def generate_launch_description():
                 LogInfo(msg='You can now:'),
                 LogInfo(msg='  • Drive: ros2 run teleop_twist_keyboard teleop_twist_keyboard'),
                 LogInfo(msg='  • Visualize: rviz2 (or ssh -X hoverbot, then rviz2)'),
-                LogInfo(msg='  • Monitor: ros2 topic hz /scan /odom /camera/camera/depth/image_rect_raw'),
+                LogInfo(msg='  • Monitor cameras:'),
+                LogInfo(msg='    - Depth: ros2 topic hz /camera/camera/depth/image_rect_raw'),
+                LogInfo(msg='    - RGB: ros2 topic hz /elp/image_raw'),
                 LogInfo(msg='')
             ]
         )
