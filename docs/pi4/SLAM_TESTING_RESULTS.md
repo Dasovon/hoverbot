@@ -1,4 +1,4 @@
-# SLAM Testing Results - December 27, 2025
+# SLAM Testing Results - December 27, 2024
 
 ## Test Configuration
 
@@ -171,7 +171,7 @@ scp ryan@192.168.86.20:~/my_map.* ~/Downloads/
    - Error checking and recovery
 
 ## Test Date
-December 27, 2025
+December 27, 2024
 
 ## Tested By
 Ryan

@@ -29,7 +29,7 @@ hardware/
 **Use RIGHT sideboard connector (USART3)**
 
 ```
-Raspberry Pi 5          Hoverboard Right Sideboard
+Raspberry Pi 4          Hoverboard Right Sideboard
 --------------          -------------------------
 Pin 6  (GND)      →     Pin 2 (GND)
 Pin 8  (GPIO14)   →     Pin 4 (RX)
@@ -75,7 +75,7 @@ USART3 pins are 5V tolerant, safe for Pi's 3.3V GPIO
 **Data:** USB to Pi
 
 ```
-RPLidar A1              Raspberry Pi 5
+RPLidar A1              Raspberry Pi 4
 ----------              --------------
 USB connector     →     USB 3.0 port
 ```
@@ -92,7 +92,7 @@ USB connector     →     USB 3.0 port
 | Component | Part Number | Qty | Notes |
 |-----------|-------------|-----|-------|
 | Hoverboard | Generic 6.5" | 1 | STM32F103 mainboard |
-| Raspberry Pi 5 | 8GB | 1 | Ubuntu 24.04 |
+| Raspberry Pi 4 | 8GB | 1 | Ubuntu 24.04 |
 | RPLidar A1 | RPLIDAR A1M8 | 1 | 360° laser scanner |
 | ST-Link V2 | Generic | 1 | For firmware flashing |
 | Dupont Wires | F-F 20cm | 10 | UART connections |

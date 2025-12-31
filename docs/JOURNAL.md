@@ -7,7 +7,7 @@ Chronological log of development progress, issues, and solutions.
 ## December 2024 - Project Foundation
 
 ### Hardware Assembly
-- ✅ Raspberry Pi 5 installed on hoverboard platform
+- ✅ Raspberry Pi 4 installed on hoverboard platform
 - ✅ RPLidar A1 mounted and wired
 - ✅ 36V 10S battery pack integrated
 - ✅ UART wiring completed (Pi → right sideboard)
@@ -92,7 +92,7 @@ Chronological log of development progress, issues, and solutions.
 ### Why Ubuntu 24.04?
 - Ubuntu 22.04 kernel lacks Pi 5 hardware support
 - ROS 2 Jazzy is the official distribution for 24.04
-- Better long-term support for Raspberry Pi 5
+- Better long-term support for Raspberry Pi 4
 
 ### Why USART3?
 - 5V tolerant GPIO (safer than USART2)

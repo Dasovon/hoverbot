@@ -147,7 +147,7 @@ ros2 topic hz /map    # ~0.1 Hz
 ```
 
 ## Status
-✅ Tested and working - December 27, 2025
+✅ Tested and working - December 27, 2024
 ✅ Real-time lidar visualization confirmed
 ✅ Map display functional
 ✅ Ready for physical robot assembly

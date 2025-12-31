@@ -27,7 +27,7 @@ An autonomous mobile robot built on a hoverboard platform with ROS 2, RPLidar A1
         Scanning      Drive Motors      (RViz/Control)
 ```
 
-## ✅ Current Status (Dec 27, 2025)
+## ✅ Current Status (Dec 31, 2024)
 
 **Software:** ✅ Complete and validated
 - Driver communicating with hoverboard (99.3% success rate)
@@ -240,4 +240,4 @@ MIT License - See LICENSE file
 
 **Built with ❤️ and lots of learning**
 
-*Last updated: December 27, 2025*
+*Last updated: December 31, 2024*4*

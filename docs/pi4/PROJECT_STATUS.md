@@ -1,4 +1,4 @@
-# HoverBot Project - Current Status (Dec 27, 2025)
+# HoverBot Project - Current Status (Dec 27, 2024)
 
 ## Quick Context for New Chat Sessions
 
@@ -8,7 +8,7 @@
 
 ## Hardware Setup
 - **Dev Machine:** Ubuntu 22.04 + ROS 2 Humble (x86_64)
-- **Robot Computer:** Raspberry Pi 4, Ubuntu 22.04 + Humble, IP: 192.168.86.20, hostname: hoverbot
+- **Robot Computer:** Raspberry Pi 4, Ubuntu 22.04 + Humble, IP: 192.168.86.33 (DHCP - use hostname: hoverbot), hostname: hoverbot
 - **Motor Controller:** Hoverboard with EFeru firmware, UART /dev/ttyAMA0, 115200 baud, 99.3% success rate
 - **Lidar:** RPLidar A1, USB /dev/ttyUSB0, 7Hz scan rate
 - **Assembly Status:** ⚠️ Not assembled - RPLidar and hoverboard are separate (bench testing only)
@@ -25,7 +25,7 @@
                          │ SSH + ROS 2 Network
                          │ (192.168.86.x)
 ┌────────────────────────┴────────────────────────────────────┐
-│              Raspberry Pi 4 (192.168.86.20)                 │
+│              Raspberry Pi 4 (192.168.86.33 (DHCP - use hostname: hoverbot))                 │
 │  ┌──────────────────────────────────────────────────────┐  │
 │  │ Tmux Session "hoverbot" (4 panes + teleop window)    │  │
 │  │                                                       │  │
@@ -353,7 +353,7 @@ I'm working on HoverBot - an autonomous mapping robot using a hoverboard platfor
 - Hardware NOT assembled yet (bench testing only)
 
 **System:**
-- Pi 4 (192.168.86.20) running Ubuntu 22.04 + ROS 2 Humble
+- Pi 4 (192.168.86.33 (DHCP - use hostname: hoverbot)) running Ubuntu 22.04 + ROS 2 Humble
 - Dev machine: Ubuntu 22.04 + ROS 2 Humble
 - GitHub: https://github.com/Dasovon/hoverbot (pi4 branch)
 
@@ -363,4 +363,4 @@ See docs/pi4/PROJECT_STATUS.md for complete details.
 ```
 
 ## Last Updated
-December 27, 2025 - Complete software stack validated and documented
+December 27, 2024 - Complete software stack validated and documented

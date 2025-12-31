@@ -324,7 +324,7 @@ Pin 4: RX (to hoverboard)
 
 **Connection to Raspberry Pi:**
 ```
-Hoverboard       Raspberry Pi 5
+Hoverboard       Raspberry Pi 4
 ----------       --------------
 Pin 2 (GND)  →   Pin 6  (GND)
 Pin 3 (TX)   →   Pin 10 (GPIO15 RX)

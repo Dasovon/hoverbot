@@ -26,7 +26,7 @@ tmux send-keys -t "$SESSION_NAME:0" "ssh $PI_HOST" C-m
 sleep 1
 tmux send-keys -t "$SESSION_NAME:0" "$ROS_SETUP" C-m
 sleep 1
-tmux send-keys -t "$SESSION_NAME:0" "ros2 launch hoverbot_bringup hoverbot_full_v2.launch.py" C-m
+tmux send-keys -t "$SESSION_NAME:0" "ros2 launch hoverbot_bringup hoverbot_full_v3.launch.py" C-m
 
 # Create second window for teleop
 tmux new-window -t "$SESSION_NAME:1" -n "teleop"

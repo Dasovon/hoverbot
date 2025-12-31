@@ -8,7 +8,7 @@ Complete step-by-step setup instructions from hardware to working robot.
 
 ### Required Hardware
 - ✅ Hoverboard with single mainboard (STM32F103)
-- ✅ Raspberry Pi 5 (4GB+ recommended)
+- ✅ Raspberry Pi 4 (4GB+ recommended)
 - ✅ MicroSD card (32GB+ recommended)
 - ✅ RPLidar A1
 - ✅ 36V battery pack (10S Li-ion)
