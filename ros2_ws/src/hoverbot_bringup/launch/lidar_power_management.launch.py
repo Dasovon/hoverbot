@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 LiDAR Power Management Launch File
-
 Launches RPLidar with intelligent motor control for power savings.
 
 Components:
@@ -11,16 +10,21 @@ Components:
 Usage:
   ros2 launch hoverbot_bringup lidar_power_management.launch.py
   
+  For bench testing (motor stays on):
+  ros2 launch hoverbot_bringup lidar_power_management.launch.py bench_test_mode:=true
+  
 Optional arguments:
   serial_port:=/dev/rplidar  (default - persistent udev name)
   activity_timeout:=30.0      (seconds before auto-stop)
+  bench_test_mode:=false      (disable auto-stop for testing)
 """
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, LogInfo
+from launch.actions import DeclareLaunchArgument, LogInfo, ExecuteProcess
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
+from pathlib import Path
 import os
 
 
@@ -31,6 +35,7 @@ def generate_launch_description():
     # Launch arguments
     serial_port = LaunchConfiguration('serial_port')
     activity_timeout = LaunchConfiguration('activity_timeout')
+    bench_test_mode = LaunchConfiguration('bench_test_mode')
     
     declare_serial_port_arg = DeclareLaunchArgument(
         'serial_port',
@@ -42,6 +47,12 @@ def generate_launch_description():
         'activity_timeout',
         default_value='30.0',
         description='Seconds of inactivity before stopping motor'
+    )
+    
+    declare_bench_test_arg = DeclareLaunchArgument(
+        'bench_test_mode',
+        default_value='false',
+        description='Disable auto-stop for bench testing (motor stays on continuously)'
     )
     
     # RPLidar Node
@@ -63,14 +74,19 @@ def generate_launch_description():
     )
     
     # LiDAR Manager Node
-    lidar_manager_node = Node(
-        package='hoverbot_bringup',
-        executable='lidar_manager',
-        name='lidar_manager',
-        parameters=[{
-            'activity_timeout': activity_timeout,
-            'startup_delay': 2.0
-        }],
+    # Using direct path workaround since ros2 pkg executables doesn't find it
+    ws_root = Path(bringup_dir).parents[3]  # Go up from share/hoverbot_bringup to workspace root
+    lidar_manager_path = ws_root / 'install' / 'hoverbot_bringup' / 'bin' / 'lidar_manager'
+    
+    lidar_manager_node = ExecuteProcess(
+        cmd=[
+            str(lidar_manager_path),
+            '--ros-args',
+            '-p', ['activity_timeout:=', activity_timeout],
+            '-p', 'startup_delay:=2.0',
+            '-p', ['bench_test_mode:=', bench_test_mode],
+            '-r', '__node:=lidar_manager'
+        ],
         output='screen'
     )
     
@@ -78,6 +94,7 @@ def generate_launch_description():
         # Arguments
         declare_serial_port_arg,
         declare_activity_timeout_arg,
+        declare_bench_test_arg,
         
         # Info
         LogInfo(msg='╔════════════════════════════════════════════════════════════╗'),
@@ -92,6 +109,9 @@ def generate_launch_description():
         LogInfo(msg='  Publish Bool to /robot_active:'),
         LogInfo(msg='    true  = Start motor (robot active)'),
         LogInfo(msg='    false = Stop motor (robot idle)'),
+        LogInfo(msg=''),
+        LogInfo(msg='Bench test mode: Launch with bench_test_mode:=true'),
+        LogInfo(msg='  (disables auto-stop, motor stays on)'),
         LogInfo(msg=''),
         
         # Nodes

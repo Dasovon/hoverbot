@@ -17,9 +17,13 @@ Behavior:
   - On /robot_active False: Stop motor if running
   - Debounce: Avoid redundant service calls
   - Timeout: Stop motor if no activity signal for 30 seconds
+  - Bench test mode: Disable auto-stop for testing (motor stays on)
 
 Usage:
   ros2 run hoverbot_bringup lidar_manager
+  
+  With bench test mode:
+  ros2 run hoverbot_bringup lidar_manager --ros-args -p bench_test_mode:=true
 """
 
 import rclpy
@@ -42,9 +46,11 @@ class LidarManager(Node):
         # Declare parameters
         self.declare_parameter('activity_timeout', 30.0)  # seconds
         self.declare_parameter('startup_delay', 2.0)  # seconds
+        self.declare_parameter('bench_test_mode', False)  # disable auto-stop
         
         # Get parameters
         self.activity_timeout = self.get_parameter('activity_timeout').value
+        self.bench_test_mode = self.get_parameter('bench_test_mode').value
         startup_delay = self.get_parameter('startup_delay').value
         
         # State tracking
@@ -71,6 +77,9 @@ class LidarManager(Node):
         self.get_logger().info('LiDAR Manager initialized')
         self.get_logger().info(f'Activity timeout: {self.activity_timeout}s')
         
+        if self.bench_test_mode:
+            self.get_logger().warn('⚠️  BENCH TEST MODE: Auto-stop disabled! Motor will stay on.')
+        
         # Wait for services to be available
         self.get_logger().info('Waiting for RPLidar services...')
         
@@ -93,9 +102,16 @@ class LidarManager(Node):
         """
         Handle robot activity state changes.
         
+        In bench test mode, this function does nothing (motor stays on).
+        
         Args:
             msg: Bool message, True = active, False = idle
         """
+        # Skip all logic in bench test mode - motor stays on continuously
+        if self.bench_test_mode:
+            return
+        
+        # Normal operation - control motor based on activity
         self.last_activity_time = self.get_clock().now()
         
         if msg.data:
@@ -112,7 +128,13 @@ class LidarManager(Node):
     def watchdog_callback(self):
         """
         Watchdog timer - stop motor if no activity for timeout period.
+        
+        Disabled in bench test mode.
         """
+        # Skip watchdog in bench test mode
+        if self.bench_test_mode:
+            return
+        
         if not self.motor_running:
             return  # Already stopped
         
