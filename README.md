@@ -2,16 +2,33 @@
 
 Complete, working configurations for building an autonomous robot from a hoverboard platform.
 
+---
+
+## 🚀 Quick Start: Choose Your Platform
+
+HoverBot supports multiple hardware platforms. **Choose yours to get started:**
+
+| Platform | Status | Best For | Quick Link |
+|----------|--------|----------|------------|
+| 🥧 **[Raspberry Pi 5](platforms/raspberry-pi5/README.md)** | ✅ **Recommended** | Best performance & latest software | [Setup Guide →](platforms/raspberry-pi5/docs/SETUP.md) |
+| 🥧 **[Raspberry Pi 4](platforms/raspberry-pi4/README.md)** | ✅ Supported | Budget-friendly, proven stability | [Setup Guide →](platforms/raspberry-pi4/README.md) |
+| 🤖 **[Jetson Nano](platforms/jetson-nano/README.md)** | ⚠️ Experimental | AI/Vision applications | [Setup Guide →](platforms/jetson-nano/README.md) |
+
+**Not sure which to choose?** See the **[Platform Comparison Guide](docs/PLATFORM_SETUP_GUIDE.md)**
+
+---
+
 ## 🎯 What This Repository Contains
 
 This repo has **everything you need** - complete working files for each component:
 
-- **`firmware/`** - Complete STM32 hoverboard controller configuration
-- **`raspberry-pi/`** - Complete Raspberry Pi setup and control scripts
-- **`ros2_ws/`** - Complete ROS 2 workspace with all packages
+- **`platforms/`** - Platform-specific configurations (Pi4, Pi5, Jetson Nano)
+- **`ros2_ws/`** - Complete ROS 2 workspace (platform-independent)
+- **`firmware/`** - STM32 hoverboard controller configuration (platform-independent)
 - **`hardware/`** - Wiring diagrams and hardware documentation
+- **`docs/`** - Comprehensive documentation and guides
 
-Each folder is **self-contained** with everything needed to make that component work.
+**Platform-specific files** are in `platforms/{platform}/` - **ROS 2 code is universal!**
 
 ---
 
@@ -20,63 +37,68 @@ Each folder is **self-contained** with everything needed to make that component 
 ```
 hoverbot/
 │
-├── firmware/                      # STM32 Hoverboard Controller
+├── platforms/                     # 🎯 PLATFORM-SPECIFIC FILES
+│   ├── common/                    # Shared utilities for all platforms
+│   │   ├── scripts/              # Generic test scripts
+│   │   ├── config/               # Config templates
+│   │   └── README.md
+│   │
+│   ├── raspberry-pi5/             # ✅ Raspberry Pi 5 (Recommended)
+│   │   ├── config/
+│   │   │   └── hoverbot_driver.yaml  # Pi5 serial port config
+│   │   ├── scripts/
+│   │   │   ├── setup_uart.sh     # Pi5 UART setup
+│   │   │   └── test_serial.py    # Serial tester
+│   │   ├── docs/
+│   │   │   └── SETUP.md          # Complete Pi5 setup guide
+│   │   └── README.md             # Pi5 overview
+│   │
+│   ├── raspberry-pi4/             # ✅ Raspberry Pi 4 (Supported)
+│   │   ├── config/
+│   │   │   └── hoverbot_driver.yaml  # Pi4 serial port config
+│   │   ├── scripts/
+│   │   │   └── setup_uart.sh     # Pi4 UART setup
+│   │   ├── docs/
+│   │   │   └── SETUP.md          # Complete Pi4 setup guide
+│   │   └── README.md             # Pi4 overview
+│   │
+│   └── jetson-nano/               # ⚠️ Jetson Nano (Experimental)
+│       ├── config/
+│       │   └── hoverbot_driver.yaml  # Jetson serial port config (/dev/ttyTHS1)
+│       ├── scripts/
+│       │   └── setup_uart.sh     # Jetson UART setup
+│       ├── docs/
+│       │   └── SETUP.md          # Jetson setup guide (TODO)
+│       └── README.md             # Jetson overview
+│
+├── ros2_ws/                       # 🤖 ROS 2 WORKSPACE (Platform-Independent!)
+│   └── src/
+│       ├── hoverbot_description/ # Robot URDF model & Gazebo simulation
+│       ├── hoverbot_driver/      # Serial driver node (works on all platforms)
+│       └── hoverbot_bringup/     # Launch files
+│
+├── firmware/                      # 🔧 STM32 HOVERBOARD FIRMWARE (Platform-Independent!)
 │   ├── config/
 │   │   └── config.h              # Complete working config.h
 │   ├── bin/
 │   │   └── firmware.bin          # Pre-compiled binary (ready to flash)
-│   ├── docs/
-│   │   ├── FIRMWARE.md           # Detailed configuration guide
-│   │   ├── FLASHING.md           # Step-by-step flashing guide
-│   │   └── PROTOCOL.md           # Serial protocol specification
-│   └── README.md                 # Firmware quick start
+│   └── README.md
 │
-├── raspberry-pi/                  # Raspberry Pi Configuration
-│   ├── scripts/
-│   │   ├── hoverboard_control.py # Complete motor control script
-│   │   ├── test_serial.py        # Serial communication test
-│   │   └── setup_uart.sh         # UART setup script
-│   ├── config/
-│   │   ├── config.txt            # Boot configuration
-│   │   ├── cmdline.txt           # Boot command line
-│   │   └── udev-rules/           # USB device rules
-│   ├── docs/
-│   │   ├── SETUP.md              # Complete Pi setup guide
-│   │   ├── UART.md               # UART configuration details
-│   │   └── TROUBLESHOOTING.md    # Common issues and fixes
-│   └── README.md                 # Pi quick start
+├── hardware/                      # 📐 HARDWARE DOCUMENTATION
+│   ├── wiring/                   # Connection diagrams
+│   ├── schematics/               # Pinouts and schematics
+│   └── README.md
 │
-├── ros2_ws/                       # ROS 2 Workspace
-│   ├── src/
-│   │   ├── hoverbot_description/ # Robot URDF model
-│   │   ├── hoverbot_driver/      # Serial driver node
-│   │   ├── hoverbot_bringup/     # Launch files
-│   │   └── hoverbot_navigation/  # Navigation configs
-│   ├── docs/
-│   │   ├── ROS2_SETUP.md         # ROS 2 installation
-│   │   ├── PACKAGES.md           # Package documentation
-│   │   └── USAGE.md              # How to use the robot
-│   └── README.md                 # ROS 2 quick start
-│
-├── hardware/                      # Hardware Documentation
-│   ├── wiring/
-│   │   ├── uart_wiring.md        # UART connection guide
-│   │   ├── power_wiring.md       # Power distribution
-│   │   └── sensor_wiring.md      # Sensor connections
-│   ├── schematics/
-│   │   └── pinouts.md            # All connector pinouts
-│   ├── docs/
-│   │   ├── ASSEMBLY.md           # Hardware assembly guide
-│   │   └── BOM.md                # Bill of materials
-│   └── README.md                 # Hardware overview
-│
-├── docs/                          # General Documentation
-│   ├── QUICKSTART.md             # Get started in 10 minutes
-│   ├── JOURNAL.md                # Development log
-│   └── FAQ.md                    # Frequently asked questions
+├── docs/                          # 📚 DOCUMENTATION
+│   ├── PLATFORM_SETUP_GUIDE.md   # Platform comparison & selection
+│   ├── SERIAL_PORT_GUIDE.md      # Cross-platform serial config
+│   ├── FIRMWARE.md               # Firmware configuration
+│   └── JOURNAL.md                # Development log
 │
 └── README.md                      # This file
 ```
+
+**Key Insight:** Only `platforms/` directory changes between hardware. ROS 2 code is universal!
 
 ---
 
