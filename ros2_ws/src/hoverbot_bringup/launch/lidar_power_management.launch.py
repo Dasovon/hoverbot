@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 LiDAR Power Management Launch File
-
 Launches RPLidar with intelligent motor control for power savings.
 
 Components:
@@ -17,10 +16,11 @@ Optional arguments:
 """
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, LogInfo
+from launch.actions import DeclareLaunchArgument, LogInfo, ExecuteProcess
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
+from pathlib import Path
 import os
 
 
@@ -63,14 +63,18 @@ def generate_launch_description():
     )
     
     # LiDAR Manager Node
-    lidar_manager_node = Node(
-        package='hoverbot_bringup',
-        executable='lidar_manager',
-        name='lidar_manager',
-        parameters=[{
-            'activity_timeout': activity_timeout,
-            'startup_delay': 2.0
-        }],
+    # Using direct path workaround since ros2 pkg executables doesn't find it
+    ws_root = Path(bringup_dir).parents[3]  # Go up from share/hoverbot_bringup to workspace root
+    lidar_manager_path = ws_root / 'install' / 'hoverbot_bringup' / 'bin' / 'lidar_manager'
+    
+    lidar_manager_node = ExecuteProcess(
+        cmd=[
+            str(lidar_manager_path),
+            '--ros-args',
+            '-p', ['activity_timeout:=', activity_timeout],
+            '-p', 'startup_delay:=2.0',
+            '-r', '__node:=lidar_manager'
+        ],
         output='screen'
     )
     
