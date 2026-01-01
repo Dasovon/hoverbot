@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
-HoverBot Full Launch - Version 3 (with Dual Cameras)
+HoverBot Full Launch - Version 3 (with Dual Cameras + Power Management)
+
+Changes from v3.1:
+- Updated RealSense depth to 30 Hz (USB 3.0 cable upgrade)
+- Integrated LiDAR power management system
+- LiDAR motor auto-stops to save 2.3W when idle
 
 Changes from v3:
 - Added RealSense D435 camera (depth) for 3D obstacle detection
@@ -40,7 +45,6 @@ def generate_launch_description():
     # Get package directories
     bringup_dir = get_package_share_directory('hoverbot_bringup')
     driver_dir = get_package_share_directory('hoverbot_driver')
-    rplidar_dir = get_package_share_directory('rplidar_ros')
     
     # Launch configurations - EXPLICIT NAMES to avoid scoping conflicts
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -174,18 +178,18 @@ def generate_launch_description():
     # ========================================================================
     # COMPONENT 5: RealSense D435 Camera (8 second delay)
     # Depth camera for enhanced 3D obstacle detection
-    # Note: Running on USB 2.1, depth-only mode for reliability
+    # Note: Upgraded to USB 3.0 - running at 30 Hz!
     # ========================================================================
     camera_launch = TimerAction(
         period=8.0,
         actions=[
-            LogInfo(msg='[8s] Starting RealSense D435 (depth camera)...'),
+            LogInfo(msg='[8s] Starting RealSense D435 (depth camera @ 30Hz)...'),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([
                     '/opt/ros/humble/share/realsense2_camera/launch/rs_launch.py'
                 ]),
                 launch_arguments={
-                    'depth_module.depth_profile': '640x480x15',
+                    'depth_module.depth_profile': '640x480x30',  # 30 Hz with USB 3.0!
                     'enable_color': 'false',  # Disable RGB - use ELP instead
                     'enable_sync': 'true',
                     'align_depth.enable': 'true'
@@ -202,7 +206,7 @@ def generate_launch_description():
     elp_camera_launch = TimerAction(
         period=8.5,
         actions=[
-            LogInfo(msg='[8.5s] Starting ELP USB camera (RGB)...'),
+            LogInfo(msg='[8.5s] Starting ELP USB camera (RGB @ 30Hz)...'),
             Node(
                 package='usb_cam',
                 executable='usb_cam_node_exe',
@@ -221,18 +225,18 @@ def generate_launch_description():
     )
     
     # ========================================================================
-    # COMPONENT 6: RPLidar (15 second delay)
-    # CRITICAL: RPLidar needs longest delay to avoid buffer overflow
+    # COMPONENT 6: RPLidar with Power Management (15 second delay)
+    # CRITICAL: RPLidar needs delay to avoid buffer overflow
+    # Power management: Motor auto-stops when idle (saves 2.3W)
     # ========================================================================
     rplidar_launch = TimerAction(
         period=15.0,
         actions=[
-            LogInfo(msg='[15s] Starting RPLidar A1...'),
+            LogInfo(msg='[15s] Starting RPLidar with power management...'),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([
-                    os.path.join(rplidar_dir, 'launch', 'rplidar_a1_launch.py')
+                    os.path.join(bringup_dir, 'launch', 'lidar_power_management.launch.py')
                 ]),
-                # CRITICAL: Use the lidar-specific port argument
                 launch_arguments={'serial_port': lidar_port}.items()
             )
         ]
@@ -270,7 +274,7 @@ def generate_launch_description():
         
         # Startup message
         LogInfo(msg='╔════════════════════════════════════════════════════════════╗'),
-        LogInfo(msg='║    HoverBot Full System Launch - V3 + Dual Cameras        ║'),
+        LogInfo(msg='║  HoverBot Full System - V3.1 + Power Management            ║'),
         LogInfo(msg='╚════════════════════════════════════════════════════════════╝'),
         LogInfo(msg=''),
         LogInfo(msg='Startup sequence:'),
@@ -279,9 +283,9 @@ def generate_launch_description():
         LogInfo(msg='  [2.5s] Static transforms (camera)'),
         LogInfo(msg='  [3s]   IMU (BNO055)'),
         LogInfo(msg='  [5s]   Sensor fusion (EKF)'),
-        LogInfo(msg='  [8s]   RealSense D435 (depth)'),
-        LogInfo(msg='  [8.5s] ELP USB camera (RGB)'),
-        LogInfo(msg='  [15s]  RPLidar A1'),
+        LogInfo(msg='  [8s]   RealSense D435 (depth @ 30Hz)'),
+        LogInfo(msg='  [8.5s] ELP USB camera (RGB @ 30Hz)'),
+        LogInfo(msg='  [15s]  RPLidar A1 (with power mgmt)'),
         LogInfo(msg='  [17s]  SLAM Toolbox'),
         LogInfo(msg=''),
         LogInfo(msg='System will be fully operational in ~19 seconds.'),
@@ -310,18 +314,21 @@ def generate_launch_description():
                 LogInfo(msg='Active sensors:'),
                 LogInfo(msg='  ✓ Hoverboard odometry (50 Hz)'),
                 LogInfo(msg='  ✓ BNO055 IMU (20 Hz)'),
-                LogInfo(msg='  ✓ RealSense D435 depth (15 Hz)'),
+                LogInfo(msg='  ✓ RealSense D435 depth (30 Hz) ← UPGRADED!'),
                 LogInfo(msg='  ✓ ELP USB camera RGB (30 Hz)'),
-                LogInfo(msg='  ✓ RPLidar A1 scan (7-10 Hz)'),
+                LogInfo(msg='  ✓ RPLidar A1 scan (7-10 Hz) ← POWER MANAGED!'),
                 LogInfo(msg='  ✓ Sensor fusion (EKF)'),
                 LogInfo(msg='  ✓ SLAM mapping'),
                 LogInfo(msg=''),
+                LogInfo(msg='Power features:'),
+                LogInfo(msg='  • LiDAR motor stops when idle (saves 2.3W)'),
+                LogInfo(msg='  • Auto-starts on robot movement'),
+                LogInfo(msg='  • 30s inactivity timeout'),
+                LogInfo(msg=''),
                 LogInfo(msg='You can now:'),
                 LogInfo(msg='  • Drive: ros2 run teleop_twist_keyboard teleop_twist_keyboard'),
-                LogInfo(msg='  • Visualize: rviz2 (or ssh -X hoverbot, then rviz2)'),
-                LogInfo(msg='  • Monitor cameras:'),
-                LogInfo(msg='    - Depth: ros2 topic hz /camera/camera/depth/image_rect_raw'),
-                LogInfo(msg='    - RGB: ros2 topic hz /elp/image_raw'),
+                LogInfo(msg='  • Visualize: rviz2'),
+                LogInfo(msg='  • Monitor: ros2 topic hz /scan'),
                 LogInfo(msg='')
             ]
         )
