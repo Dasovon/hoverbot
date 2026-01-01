@@ -102,16 +102,11 @@ class LidarManager(Node):
         """
         Handle robot activity state changes.
         
-        In bench test mode, this function does nothing (motor stays on).
+        In bench test mode, only responds to start (true), ignores stop (false).
         
         Args:
             msg: Bool message, True = active, False = idle
         """
-        # Skip all logic in bench test mode - motor stays on continuously
-        if self.bench_test_mode:
-            return
-        
-        # Normal operation - control motor based on activity
         self.last_activity_time = self.get_clock().now()
         
         if msg.data:
@@ -121,6 +116,10 @@ class LidarManager(Node):
                 self.start_motor()
         else:
             # Robot idle - stop motor to save power
+            # SKIP in bench test mode - motor stays on
+            if self.bench_test_mode:
+                return  # Don't stop in bench test mode
+            
             if self.motor_running:
                 self.get_logger().info('Robot idle - Stopping motor')
                 self.stop_motor()
