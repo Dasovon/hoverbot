@@ -50,6 +50,7 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     hoverboard_port = LaunchConfiguration('hoverboard_port')
     lidar_port = LaunchConfiguration('lidar_port')
+    bench_test_mode = LaunchConfiguration('bench_test_mode')
     
     # Arguments with clear, unambiguous names
     declare_sim_time_arg = DeclareLaunchArgument(
@@ -70,6 +71,13 @@ def generate_launch_description():
         description='RPLidar serial port (persistent udev link)'
     )
     
+    # Add this:
+    declare_bench_test_arg = DeclareLaunchArgument(
+        'bench_test_mode',
+        default_value='false',
+        description='Disable LiDAR auto-stop for bench testing'
+    )
+
     # ========================================================================
     # COMPONENT 1: Hoverboard Driver (immediate start)
     # ========================================================================
