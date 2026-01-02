@@ -2,14 +2,6 @@
 
 An autonomous mobile robot built on a hoverboard platform with ROS 2, RPLidar A1 for SLAM mapping, and Nav2 for autonomous navigation.
 
-<<<<<<< HEAD
-## 🎯 Project Goals
-
-- Map indoor environments autonomously using SLAM
-- Navigate mapped spaces avoiding obstacles
-- Reuse hoverboard motors and battery for cost-effective platform
-- Learn ROS 2, robotics software, and embedded systems
-=======
 ---
 
 ## 🚀 Quick Start: Choose Your Platform
@@ -41,89 +33,8 @@ This repo has **everything you need** - complete working files for each componen
 ---
 
 ## 📁 Repository Structure
->>>>>>> claude/change-branch-ZGp4e
 
-## 🤖 System Overview
 ```
-<<<<<<< HEAD
-                    ┌─────────────────┐
-                    │  Raspberry Pi 4 │
-                    │  ROS 2 Humble   │
-                    └────────┬────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              │              │              │
-        ┌─────▼────┐   ┌────▼─────┐  ┌────▼────┐
-        │RPLidar A1│   │Hoverboard│  │ Network │
-        │  (USB)   │   │  (UART)  │  │  (WiFi) │
-        └──────────┘   └──────────┘  └─────────┘
-             │               │              │
-        360° Lidar    Differential      Dev Machine
-        Scanning      Drive Motors      (RViz/Control)
-```
-
-## ✅ Current Status (Dec 31, 2024)
-
-**Software:** ✅ Complete and validated (7 sensors integrated)
-- Driver communicating with hoverboard (99.3% success rate)
-- BNO055 IMU calibrated (9.80 m/s² gravity - perfect!)
-- Sensor fusion (EKF) fusing odometry + IMU at 50 Hz
-- RPLidar scanning and publishing data at 7.6 Hz
-- RealSense D435 publishing depth at 15 Hz
-- ELP USB camera publishing RGB at 30 Hz
-- SLAM Toolbox creating maps at 0.1 Hz
-- Nav2 configured for autonomous navigation
-- Single-command V3 launch system
-- RViz real-time visualization working
-- Persistent device names (udev rules)
-
-**Hardware:** ⏳ Assembly pending
-- Components tested individually
-- Bench testing successful
-- Awaiting physical robot construction
-
-## 🛠️ Hardware
-
-| Component | Model | Function | Status |
-|-----------|-------|----------|--------|
-| Computer | Raspberry Pi 4 (4GB) | Main controller | ✅ Working |
-| Motors | Hoverboard (EFeru firmware) | Differential drive | ✅ Working |
-| Lidar | RPLidar A1 | 2D SLAM mapping | ✅ Working |
-| IMU | Adafruit BNO055 | Orientation, sensor fusion | ✅ Working |
-| Depth Camera | Intel RealSense D435 | 3D obstacles (15 Hz) | ✅ Working |
-| RGB Camera | ELP USB GS1200P01 | Visual tasks (30 Hz) | ✅ Working |
-| Platform | Hoverboard deck | Robot chassis | ⏳ Assembly needed |
-| Battery | Hoverboard 36V | Power supply | ✅ Working |
-
-### Wiring
-- **UART:** Pi GPIO14/15 (TX/RX) ↔ Hoverboard USART3 (115200 baud)
-- **Power:** Hoverboard battery → Pi via buck converter
-- **Lidar:** USB connection to Pi
-
-### Additional Sensors
-- **IMU:** BNO055 via I2C (address 0x28)
-- **Depth Camera:** RealSense D435 via USB
-- **RGB Camera:** ELP GS1200P01 via USB (persistent /dev/elp_camera)
-
-See `hardware/` for detailed wiring diagrams.
-
-## 💻 Software Stack
-
-- **OS:** Ubuntu 22.04 LTS Server (ARM64)
-- **ROS:** ROS 2 Humble Hawksbill
-- **SLAM:** SLAM Toolbox (Karto SLAM)
-- **Navigation:** Nav2 (Navigation2)
-- **Visualization:** RViz2
-- **Automation:** Tmux session management
-
-### ROS 2 Packages
-```
-hoverbot/ros2_ws/src/
-├── hoverbot_driver      # Serial communication with hoverboard
-├── hoverbot_bringup     # Launch files and configurations
-└── hoverbot_description # Robot URDF (future)
-```
-=======
 hoverbot/
 │
 ├── platforms/                     # 🎯 PLATFORM-SPECIFIC FILES
@@ -190,12 +101,76 @@ hoverbot/
 **Key Insight:** Only `platforms/` directory changes between hardware. ROS 2 code is universal!
 
 ---
->>>>>>> claude/change-branch-ZGp4e
+
+## ✅ Current Status (January 2, 2026)
+
+**Active Platforms:** Pi 4 (production), Pi 5 (documented), Jetson Nano (experimental)
+
+**Software:** ✅ Complete and validated (7 sensors integrated, multi-platform support)
+- V3 launch system with single-command startup
+- Driver communicating with hoverboard (99.3% success rate)
+- BNO055 IMU calibrated (9.80 m/s² gravity - perfect!)
+- Sensor fusion (EKF) fusing odometry + IMU at 50 Hz
+- RPLidar scanning and publishing data at 7.6 Hz
+- RealSense D435 publishing depth at 15 Hz
+- ELP USB camera publishing RGB at 30 Hz
+- SLAM Toolbox creating maps at 0.1 Hz
+- Nav2 configured for autonomous navigation
+- RViz real-time visualization working
+- Persistent device names (udev rules)
+- Multi-platform architecture (Pi4, Pi5, Jetson)
+
+**Hardware:** ⏳ Assembly pending
+- Components tested individually
+- Bench testing successful
+- Awaiting physical robot construction
+
+## 🛠️ Hardware
+
+| Component | Model | Function | Status |
+|-----------|-------|----------|--------|
+| Computer | Raspberry Pi 4 (4GB) | Main controller | ✅ Working |
+| Motors | Hoverboard (EFeru firmware) | Differential drive | ✅ Working |
+| Lidar | RPLidar A1 | 2D SLAM mapping | ✅ Working |
+| IMU | Adafruit BNO055 | Orientation, sensor fusion | ✅ Working |
+| Depth Camera | Intel RealSense D435 | 3D obstacles (15 Hz) | ✅ Working |
+| RGB Camera | ELP USB GS1200P01 | Visual tasks (30 Hz) | ✅ Working |
+| Platform | Hoverboard deck | Robot chassis | ⏳ Assembly needed |
+| Battery | Hoverboard 36V | Power supply | ✅ Working |
+
+### Wiring
+- **UART:** Pi GPIO14/15 (TX/RX) ↔ Hoverboard USART3 (115200 baud)
+- **Power:** Hoverboard battery → Pi via buck converter
+- **Lidar:** USB connection to Pi
+
+### Additional Sensors
+- **IMU:** BNO055 via I2C (address 0x28)
+- **Depth Camera:** RealSense D435 via USB
+- **RGB Camera:** ELP GS1200P01 via USB (persistent /dev/elp_camera)
+
+See `hardware/` for detailed wiring diagrams.
+
+## 💻 Software Stack
+
+- **OS:** Ubuntu 22.04 LTS Server (ARM64)
+- **ROS:** ROS 2 Humble Hawksbill
+- **SLAM:** SLAM Toolbox (Karto SLAM)
+- **Navigation:** Nav2 (Navigation2)
+- **Visualization:** RViz2
+- **Automation:** Tmux session management
+
+### ROS 2 Packages
+```
+hoverbot/ros2_ws/src/
+├── hoverbot_driver      # Serial communication with hoverboard
+├── hoverbot_bringup     # Launch files and configurations
+└── hoverbot_description # Robot URDF (future)
+```
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Raspberry Pi 4 running Ubuntu 22.04 + ROS 2 Humble
+- Raspberry Pi 4 running Ubuntu 22.04 + ROS 2 Humble (or Pi 5, or Jetson - see platform guides)
 - RPLidar A1 connected via USB
 - Hoverboard with EFeru firmware via UART
 - Dev machine with ROS 2 Humble (for visualization)
@@ -356,4 +331,4 @@ MIT License - See LICENSE file
 
 **Built with ❤️ and lots of learning**
 
-*Last updated: December 31, 2024*4*
+*Last updated: January 2, 2026*
