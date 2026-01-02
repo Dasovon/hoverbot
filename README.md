@@ -2,12 +2,112 @@
 
 An autonomous mobile robot built on a hoverboard platform with ROS 2, RPLidar A1 for SLAM mapping, and Nav2 for autonomous navigation.
 
+---
+
+## 🚀 Quick Start: Choose Your Platform
+
+HoverBot supports multiple hardware platforms. **Choose yours to get started:**
+
+| Platform | Status | Best For | Quick Link |
+|----------|--------|----------|------------|
+| 🥧 **[Raspberry Pi 5](platforms/raspberry-pi5/README.md)** | ✅ **Recommended** | Best performance & latest software | [Setup Guide →](platforms/raspberry-pi5/docs/SETUP.md) |
+| 🥧 **[Raspberry Pi 4](platforms/raspberry-pi4/README.md)** | ✅ Supported | Budget-friendly, proven stability | [Setup Guide →](platforms/raspberry-pi4/README.md) |
+| 🤖 **[Jetson Nano](platforms/jetson-nano/README.md)** | ⚠️ Experimental | AI/Vision applications | [Setup Guide →](platforms/jetson-nano/README.md) |
+
+**Not sure which to choose?** See the **[Platform Comparison Guide](docs/PLATFORM_SETUP_GUIDE.md)**
+
+---
+
 ## 🎯 Project Goals
 
 - Map indoor environments autonomously using SLAM
 - Navigate mapped spaces avoiding obstacles
 - Reuse hoverboard motors and battery for cost-effective platform
 - Learn ROS 2, robotics software, and embedded systems
+
+## 🎯 What This Repository Contains
+
+This repo has **everything you need** - complete working files for each component:
+
+- **`platforms/`** - Platform-specific configurations (Pi4, Pi5, Jetson Nano)
+- **`ros2_ws/`** - Complete ROS 2 workspace (platform-independent)
+- **`firmware/`** - STM32 hoverboard controller configuration (platform-independent)
+- **`hardware/`** - Wiring diagrams and hardware documentation
+- **`docs/`** - Comprehensive documentation and guides
+
+**Platform-specific files** are in `platforms/{platform}/` - **ROS 2 code is universal!**
+
+---
+
+## 📁 Repository Structure
+
+```
+hoverbot/
+│
+├── platforms/                     # 🎯 PLATFORM-SPECIFIC FILES
+│   ├── common/                    # Shared utilities for all platforms
+│   │   ├── scripts/              # Generic test scripts
+│   │   ├── config/               # Config templates
+│   │   └── README.md
+│   │
+│   ├── raspberry-pi5/             # ✅ Raspberry Pi 5 (Recommended)
+│   │   ├── config/
+│   │   │   └── hoverbot_driver.yaml  # Pi5 serial port config
+│   │   ├── scripts/
+│   │   │   ├── setup_uart.sh     # Pi5 UART setup
+│   │   │   └── test_serial.py    # Serial tester
+│   │   ├── docs/
+│   │   │   └── SETUP.md          # Complete Pi5 setup guide
+│   │   └── README.md             # Pi5 overview
+│   │
+│   ├── raspberry-pi4/             # ✅ Raspberry Pi 4 (Supported)
+│   │   ├── config/
+│   │   │   └── hoverbot_driver.yaml  # Pi4 serial port config
+│   │   ├── scripts/
+│   │   │   └── setup_uart.sh     # Pi4 UART setup
+│   │   ├── docs/
+│   │   │   └── SETUP.md          # Complete Pi4 setup guide
+│   │   └── README.md             # Pi4 overview
+│   │
+│   └── jetson-nano/               # ⚠️ Jetson Nano (Experimental)
+│       ├── config/
+│       │   └── hoverbot_driver.yaml  # Jetson serial port config (/dev/ttyTHS1)
+│       ├── scripts/
+│       │   └── setup_uart.sh     # Jetson UART setup
+│       ├── docs/
+│       │   └── SETUP.md          # Jetson setup guide (TODO)
+│       └── README.md             # Jetson overview
+│
+├── ros2_ws/                       # 🤖 ROS 2 WORKSPACE (Platform-Independent!)
+│   └── src/
+│       ├── hoverbot_description/ # Robot URDF model & Gazebo simulation
+│       ├── hoverbot_driver/      # Serial driver node (works on all platforms)
+│       └── hoverbot_bringup/     # Launch files
+│
+├── firmware/                      # 🔧 STM32 HOVERBOARD FIRMWARE (Platform-Independent!)
+│   ├── config/
+│   │   └── config.h              # Complete working config.h
+│   ├── bin/
+│   │   └── firmware.bin          # Pre-compiled binary (ready to flash)
+│   └── README.md
+│
+├── hardware/                      # 📐 HARDWARE DOCUMENTATION
+│   ├── wiring/                   # Connection diagrams
+│   ├── schematics/               # Pinouts and schematics
+│   └── README.md
+│
+├── docs/                          # 📚 DOCUMENTATION
+│   ├── PLATFORM_SETUP_GUIDE.md   # Platform comparison & selection
+│   ├── SERIAL_PORT_GUIDE.md      # Cross-platform serial config
+│   ├── FIRMWARE.md               # Firmware configuration
+│   └── JOURNAL.md                # Development log
+│
+└── README.md                      # This file
+```
+
+**Key Insight:** Only `platforms/` directory changes between hardware. ROS 2 code is universal!
+
+---
 
 ## 🤖 System Overview
 ```
@@ -29,6 +129,11 @@ An autonomous mobile robot built on a hoverboard platform with ROS 2, RPLidar A1
 
 ## ✅ Current Status (Dec 31, 2024)
 
+**Multi-Platform Support:** ✅ Complete
+- Raspberry Pi 4 (tested and working)
+- Raspberry Pi 5 (recommended, full setup guide)
+- Jetson Nano (experimental support)
+
 **Software:** ✅ Complete and validated (7 sensors integrated)
 - Driver communicating with hoverboard (99.3% success rate)
 - BNO055 IMU calibrated (9.80 m/s² gravity - perfect!)
@@ -41,6 +146,7 @@ An autonomous mobile robot built on a hoverboard platform with ROS 2, RPLidar A1
 - Single-command V3 launch system
 - RViz real-time visualization working
 - Persistent device names (udev rules)
+- Gazebo simulation environment
 
 **Hardware:** ⏳ Assembly pending
 - Components tested individually
@@ -74,8 +180,8 @@ See `hardware/` for detailed wiring diagrams.
 
 ## 💻 Software Stack
 
-- **OS:** Ubuntu 22.04 LTS Server (ARM64)
-- **ROS:** ROS 2 Humble Hawksbill
+- **OS:** Ubuntu 22.04 LTS Server (ARM64) - Pi4, Ubuntu 24.04 - Pi5
+- **ROS:** ROS 2 Humble Hawksbill (Pi4/Jetson), Jazzy Jalisco (Pi5)
 - **SLAM:** SLAM Toolbox (Karto SLAM)
 - **Navigation:** Nav2 (Navigation2)
 - **Visualization:** RViz2
@@ -86,16 +192,16 @@ See `hardware/` for detailed wiring diagrams.
 hoverbot/ros2_ws/src/
 ├── hoverbot_driver      # Serial communication with hoverboard
 ├── hoverbot_bringup     # Launch files and configurations
-└── hoverbot_description # Robot URDF (future)
+└── hoverbot_description # Robot URDF & Gazebo simulation
 ```
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Raspberry Pi 4 running Ubuntu 22.04 + ROS 2 Humble
+- Raspberry Pi 4/5 or Jetson Nano (see platform guides above)
 - RPLidar A1 connected via USB
 - Hoverboard with EFeru firmware via UART
-- Dev machine with ROS 2 Humble (for visualization)
+- Dev machine with ROS 2 (for visualization)
 
 ### One-Command Startup
 ```bash
@@ -134,13 +240,14 @@ ros2 run nav2_map_server map_saver_cli -f ~/maps/my_map
 
 ## 📚 Documentation
 
-All documentation in `docs/pi4/`:
+All documentation in `docs/`:
 
-- **[PROJECT_STATUS.md](docs/pi4/PROJECT_STATUS.md)** - Complete project overview and current status
-- **[QUICK_START.md](docs/pi4/QUICK_START.md)** - Copy-paste startup commands
-- **[SLAM_TESTING_RESULTS.md](docs/pi4/SLAM_TESTING_RESULTS.md)** - Detailed test results
-- **[RVIZ_SETUP.md](docs/pi4/RVIZ_SETUP.md)** - Visualization setup guide
-- **[NAV2_SETUP.md](docs/pi4/NAV2_SETUP.md)** - Autonomous navigation guide
+- **[PLATFORM_SETUP_GUIDE.md](docs/PLATFORM_SETUP_GUIDE.md)** - Platform comparison & selection guide
+- **[SERIAL_PORT_GUIDE.md](docs/SERIAL_PORT_GUIDE.md)** - Cross-platform serial configuration
+- **[FIRMWARE.md](docs/FIRMWARE.md)** - Firmware configuration guide
+- **[JOURNAL.md](docs/JOURNAL.md)** - Development log
+
+Platform-specific guides in `platforms/{platform}/docs/SETUP.md`
 
 ## 🔧 Development Setup
 
@@ -148,10 +255,9 @@ All documentation in `docs/pi4/`:
 ```bash
 git clone https://github.com/Dasovon/hoverbot.git
 cd hoverbot
-git checkout pi4  # Pi 4 working branch
 ```
 
-### Build on Raspberry Pi
+### Build on Your Platform
 ```bash
 cd ~/hoverbot/ros2_ws
 colcon build
@@ -160,7 +266,7 @@ source install/setup.bash
 
 ### Development Machine Setup
 ```bash
-# Install ROS 2 Humble
+# Install ROS 2 Humble (or Jazzy for Pi5)
 sudo apt install ros-humble-desktop
 
 # Install RViz
@@ -198,7 +304,7 @@ This project covers:
 2. **SLAM Initial Dropping** - Messages drop for ~5s during startup (self-resolves)
 3. **Map Save Timing** - Must time map_saver with 10s publish cycle
 
-See full issue list in `docs/pi4/PROJECT_STATUS.md`
+See full issue list in platform-specific docs.
 
 ## 🗺️ Roadmap
 
@@ -209,6 +315,7 @@ See full issue list in `docs/pi4/PROJECT_STATUS.md`
 - [x] Tmux automation
 - [x] RViz visualization
 - [x] Nav2 configuration
+- [x] Multi-platform support
 
 ### Phase 2: Hardware Assembly (⏳ Next)
 - [ ] Mount RPLidar on chassis
@@ -224,13 +331,12 @@ See full issue list in `docs/pi4/PROJECT_STATUS.md`
 
 ### Phase 4: Advanced Features
 - [ ] Visual odometry (camera)
-- [ ] IMU integration
 - [ ] Web interface
 - [ ] Mobile app control
 
 ## 🤝 Contributing
 
-This is a personal learning project, but suggestions and ideas are welcome! Open an issue or submit a PR.
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
 
@@ -253,4 +359,4 @@ MIT License - See LICENSE file
 
 **Built with ❤️ and lots of learning**
 
-*Last updated: December 31, 2024*4*
+*Last updated: January 2, 2026*
