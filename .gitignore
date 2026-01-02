@@ -43,3 +43,6 @@ maps/*.yaml
 # Temporary files
 *.tmp
 *.bak
+
+# Development scratchpad (session notes)
+.scratchpad/
