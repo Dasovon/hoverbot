@@ -6,6 +6,7 @@ Launches Gazebo simulation with the HoverBot robot model
 """
 
 import os
+import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
@@ -23,12 +24,9 @@ def generate_launch_description():
     pkg_hoverbot_description = get_package_share_directory('hoverbot_description')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
-    # Paths to files
+    # Process xacro file to URDF
     urdf_file = os.path.join(pkg_hoverbot_description, 'urdf', 'hoverbot.gazebo.xacro')
-
-    # Read URDF file
-    with open(urdf_file, 'r') as infp:
-        robot_desc = infp.read()
+    robot_desc = xacro.process_file(urdf_file).toxml()
 
     # Launch Arguments
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
