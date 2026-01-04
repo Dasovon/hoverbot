@@ -1,0 +1,4 @@
+[console_scripts]
+lidar_manager = hoverbot_bringup.lidar_manager:main
+test_lidar_control = hoverbot_bringup.test_lidar_control:main
+

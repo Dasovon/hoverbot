@@ -1,0 +1,8 @@
+/**:
+  ros__parameters:
+    # Activity timeout - stop motor if no activity signal for this long (seconds)
+    activity_timeout: 30.0
+    
+    # Startup delay - wait this long before stopping motor on startup (seconds)
+    # Allows RPLidar node to fully initialize first
+    startup_delay: 2.0

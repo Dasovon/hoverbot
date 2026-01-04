@@ -1,0 +1,23 @@
+[1.273s] Invoking command in '/home/ryan/hoverbot/ros2_ws/build/hoverbot_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver:/opt/ros/humble /usr/bin/cmake --build /home/ryan/hoverbot/ros2_ws/build/hoverbot_description -- -j4 -l4
+[2.528s] Invoked command in '/home/ryan/hoverbot/ros2_ws/build/hoverbot_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver:/opt/ros/humble /usr/bin/cmake --build /home/ryan/hoverbot/ros2_ws/build/hoverbot_description -- -j4 -l4
+[2.571s] Invoking command in '/home/ryan/hoverbot/ros2_ws/build/hoverbot_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver:/opt/ros/humble /usr/bin/cmake --install /home/ryan/hoverbot/ros2_ws/build/hoverbot_description
+[2.606s] -- Install configuration: ""
+[2.609s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/urdf
+[2.610s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/urdf/hoverbot.urdf
+[2.611s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/urdf/hoverbot.gazebo.xacro
+[2.611s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/ament_index/resource_index/package_run_dependencies/hoverbot_description
+[2.612s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/ament_index/resource_index/parent_prefix_path/hoverbot_description
+[2.613s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/environment/ament_prefix_path.sh
+[2.614s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/environment/ament_prefix_path.dsv
+[2.615s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/environment/path.sh
+[2.616s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/environment/path.dsv
+[2.617s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/local_setup.bash
+[2.618s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/local_setup.sh
+[2.620s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/local_setup.zsh
+[2.620s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/local_setup.dsv
+[2.621s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/package.dsv
+[2.621s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/ament_index/resource_index/packages/hoverbot_description
+[2.622s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/cmake/hoverbot_descriptionConfig.cmake
+[2.622s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/cmake/hoverbot_descriptionConfig-version.cmake
+[2.623s] -- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/package.xml
+[2.633s] Invoked command in '/home/ryan/hoverbot/ros2_ws/build/hoverbot_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver:/opt/ros/humble /usr/bin/cmake --install /home/ryan/hoverbot/ros2_ws/build/hoverbot_description

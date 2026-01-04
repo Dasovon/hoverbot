@@ -1,0 +1,146 @@
+[0.000000] (-) TimerEvent: {}
+[0.001677] (hoverbot_bringup) JobQueued: {'identifier': 'hoverbot_bringup', 'dependencies': OrderedDict()}
+[0.002161] (hoverbot_description) JobQueued: {'identifier': 'hoverbot_description', 'dependencies': OrderedDict()}
+[0.002348] (hoverbot_driver) JobQueued: {'identifier': 'hoverbot_driver', 'dependencies': OrderedDict()}
+[0.002620] (hoverbot_bringup) JobStarted: {'identifier': 'hoverbot_bringup'}
+[0.055588] (hoverbot_description) JobStarted: {'identifier': 'hoverbot_description'}
+[0.080341] (hoverbot_driver) JobStarted: {'identifier': 'hoverbot_driver'}
+[0.098584] (-) TimerEvent: {}
+[0.199262] (-) TimerEvent: {}
+[0.299991] (-) TimerEvent: {}
+[0.400650] (-) TimerEvent: {}
+[0.501308] (-) TimerEvent: {}
+[0.601969] (-) TimerEvent: {}
+[0.702591] (-) TimerEvent: {}
+[0.803251] (-) TimerEvent: {}
+[0.903842] (-) TimerEvent: {}
+[1.004456] (-) TimerEvent: {}
+[1.105075] (-) TimerEvent: {}
+[1.205850] (-) TimerEvent: {}
+[1.306904] (-) TimerEvent: {}
+[1.318270] (hoverbot_description) JobProgress: {'identifier': 'hoverbot_description', 'progress': 'cmake'}
+[1.323031] (hoverbot_description) JobProgress: {'identifier': 'hoverbot_description', 'progress': 'build'}
+[1.325991] (hoverbot_description) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/ryan/hoverbot/ros2_ws/build/hoverbot_description', '--', '-j4', '-l4'], 'cwd': '/home/ryan/hoverbot/ros2_ws/build/hoverbot_description', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'ryan'), ('SSH_CLIENT', '192.168.86.37 44626 22'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/ryan'), ('OLDPWD', '/home/ryan'), ('SSH_TTY', '/dev/pts/3'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLCON_PREFIX_PATH', '/home/ryan/hoverbot/ros2_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'ryan'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '3'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', 'localhost:11.0'), ('LANG', 'en_US.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '0'), ('AMENT_PREFIX_PATH', '/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver:/home/ryan/hoverbot/ros2_ws/install/hoverbot_description:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/home/ryan/hoverbot/ros2_ws/build/hoverbot_description'), ('LC_ALL', 'en_US.UTF-8'), ('SSH_CONNECTION', '192.168.86.37 44626 192.168.86.33 22'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/ryan/hoverbot/ros2_ws/install/hoverbot_description:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver:/opt/ros/humble')]), 'shell': False}
+[1.407084] (-) TimerEvent: {}
+[1.507852] (-) TimerEvent: {}
+[1.608616] (-) TimerEvent: {}
+[1.709459] (-) TimerEvent: {}
+[1.810113] (-) TimerEvent: {}
+[1.910755] (-) TimerEvent: {}
+[2.011450] (-) TimerEvent: {}
+[2.112056] (-) TimerEvent: {}
+[2.212674] (-) TimerEvent: {}
+[2.313447] (-) TimerEvent: {}
+[2.414237] (-) TimerEvent: {}
+[2.515048] (-) TimerEvent: {}
+[2.583638] (hoverbot_description) CommandEnded: {'returncode': 0}
+[2.588096] (hoverbot_description) JobProgress: {'identifier': 'hoverbot_description', 'progress': 'install'}
+[2.615264] (-) TimerEvent: {}
+[2.621057] (hoverbot_description) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/ryan/hoverbot/ros2_ws/build/hoverbot_description'], 'cwd': '/home/ryan/hoverbot/ros2_ws/build/hoverbot_description', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'ryan'), ('SSH_CLIENT', '192.168.86.37 44626 22'), ('XDG_SESSION_TYPE', 'tty'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib'), ('MOTD_SHOWN', 'pam'), ('HOME', '/home/ryan'), ('OLDPWD', '/home/ryan'), ('SSH_TTY', '/dev/pts/3'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLCON_PREFIX_PATH', '/home/ryan/hoverbot/ros2_ws/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'ryan'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('XDG_SESSION_CLASS', 'user'), ('TERM', 'xterm-256color'), ('XDG_SESSION_ID', '3'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', 'localhost:11.0'), ('LANG', 'en_US.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('ROS_DOMAIN_ID', '0'), ('AMENT_PREFIX_PATH', '/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver:/home/ryan/hoverbot/ros2_ws/install/hoverbot_description:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/home/ryan/hoverbot/ros2_ws/build/hoverbot_description'), ('LC_ALL', 'en_US.UTF-8'), ('SSH_CONNECTION', '192.168.86.37 44626 192.168.86.33 22'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('CMAKE_PREFIX_PATH', '/home/ryan/hoverbot/ros2_ws/install/hoverbot_description:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver:/opt/ros/humble')]), 'shell': False}
+[2.661740] (hoverbot_description) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[2.664353] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/urdf\n'}
+[2.665422] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/urdf/hoverbot.urdf\n'}
+[2.666372] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/urdf/hoverbot.gazebo.xacro\n'}
+[2.666943] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/ament_index/resource_index/package_run_dependencies/hoverbot_description\n'}
+[2.667807] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/ament_index/resource_index/parent_prefix_path/hoverbot_description\n'}
+[2.668834] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/environment/ament_prefix_path.sh\n'}
+[2.669811] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/environment/ament_prefix_path.dsv\n'}
+[2.670807] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/environment/path.sh\n'}
+[2.671496] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/environment/path.dsv\n'}
+[2.672037] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/local_setup.bash\n'}
+[2.673304] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/local_setup.sh\n'}
+[2.674790] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/local_setup.zsh\n'}
+[2.675805] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/local_setup.dsv\n'}
+[2.676420] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/package.dsv\n'}
+[2.676976] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/ament_index/resource_index/packages/hoverbot_description\n'}
+[2.677446] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/cmake/hoverbot_descriptionConfig.cmake\n'}
+[2.677917] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/cmake/hoverbot_descriptionConfig-version.cmake\n'}
+[2.678369] (hoverbot_description) StdoutLine: {'line': b'-- Up-to-date: /home/ryan/hoverbot/ros2_ws/install/hoverbot_description/share/hoverbot_description/package.xml\n'}
+[2.688228] (hoverbot_description) CommandEnded: {'returncode': 0}
+[2.716546] (-) TimerEvent: {}
+[2.804637] (hoverbot_description) JobEnded: {'identifier': 'hoverbot_description', 'rc': 0}
+[2.816754] (-) TimerEvent: {}
+[2.917540] (-) TimerEvent: {}
+[3.018347] (-) TimerEvent: {}
+[3.119126] (-) TimerEvent: {}
+[3.219841] (-) TimerEvent: {}
+[3.320688] (-) TimerEvent: {}
+[3.422423] (-) TimerEvent: {}
+[3.525282] (-) TimerEvent: {}
+[3.626791] (-) TimerEvent: {}
+[3.728662] (-) TimerEvent: {}
+[3.830827] (-) TimerEvent: {}
+[3.932504] (-) TimerEvent: {}
+[4.033533] (-) TimerEvent: {}
+[4.134260] (-) TimerEvent: {}
+[4.234975] (-) TimerEvent: {}
+[4.335793] (-) TimerEvent: {}
+[4.436596] (-) TimerEvent: {}
+[4.537363] (-) TimerEvent: {}
+[4.638466] (-) TimerEvent: {}
+[4.739363] (-) TimerEvent: {}
+[4.840406] (-) TimerEvent: {}
+[4.942544] (-) TimerEvent: {}
+[5.044341] (-) TimerEvent: {}
+[5.060397] (hoverbot_driver) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/hoverbot_driver', 'build', '--build-base', '/home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build', 'install', '--record', '/home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/ryan/hoverbot/ros2_ws/src/hoverbot_driver', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'ryan', 'SSH_CLIENT': '192.168.86.37 44626 22', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib', 'MOTD_SHOWN': 'pam', 'HOME': '/home/ryan', 'OLDPWD': '/home/ryan', 'SSH_TTY': '/dev/pts/3', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLCON_PREFIX_PATH': '/home/ryan/hoverbot/ros2_ws/install', 'ROS_DISTRO': 'humble', 'LOGNAME': 'ryan', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '3', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': 'localhost:11.0', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'ROS_DOMAIN_ID': '0', 'AMENT_PREFIX_PATH': '/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver:/home/ryan/hoverbot/ros2_ws/install/hoverbot_description:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup:/opt/ros/humble', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'PWD': '/home/ryan/hoverbot/ros2_ws/build/hoverbot_driver', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '192.168.86.37 44626 192.168.86.33 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/home/ryan/hoverbot/ros2_ws/install/hoverbot_description:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup'}, 'shell': False}
+[5.080119] (hoverbot_bringup) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/hoverbot_bringup', 'build', '--build-base', '/home/ryan/hoverbot/ros2_ws/build/hoverbot_bringup/build', 'install', '--record', '/home/ryan/hoverbot/ros2_ws/build/hoverbot_bringup/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/ryan/hoverbot/ros2_ws/src/hoverbot_bringup', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'ryan', 'SSH_CLIENT': '192.168.86.37 44626 22', 'XDG_SESSION_TYPE': 'tty', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib', 'MOTD_SHOWN': 'pam', 'HOME': '/home/ryan', 'OLDPWD': '/home/ryan', 'SSH_TTY': '/dev/pts/3', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLCON_PREFIX_PATH': '/home/ryan/hoverbot/ros2_ws/install', 'ROS_DISTRO': 'humble', 'LOGNAME': 'ryan', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '3', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': 'localhost:11.0', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'ROS_DOMAIN_ID': '0', 'AMENT_PREFIX_PATH': '/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver:/home/ryan/hoverbot/ros2_ws/install/hoverbot_description:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup:/opt/ros/humble', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'PWD': '/home/ryan/hoverbot/ros2_ws/build/hoverbot_bringup', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '192.168.86.37 44626 192.168.86.33 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/ryan/hoverbot/ros2_ws/build/hoverbot_bringup/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/lib/python3.10/site-packages:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/home/ryan/hoverbot/ros2_ws/install/hoverbot_description:/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup'}, 'shell': False}
+[5.144529] (-) TimerEvent: {}
+[5.245344] (-) TimerEvent: {}
+[5.346043] (-) TimerEvent: {}
+[5.446747] (-) TimerEvent: {}
+[5.547460] (-) TimerEvent: {}
+[5.648127] (-) TimerEvent: {}
+[5.748785] (-) TimerEvent: {}
+[5.849494] (-) TimerEvent: {}
+[5.950187] (-) TimerEvent: {}
+[6.050878] (-) TimerEvent: {}
+[6.151618] (-) TimerEvent: {}
+[6.252282] (-) TimerEvent: {}
+[6.305498] (hoverbot_driver) StdoutLine: {'line': b'running egg_info\n'}
+[6.309628] (hoverbot_driver) StdoutLine: {'line': b'writing ../../build/hoverbot_driver/hoverbot_driver.egg-info/PKG-INFO\n'}
+[6.311833] (hoverbot_driver) StdoutLine: {'line': b'writing dependency_links to ../../build/hoverbot_driver/hoverbot_driver.egg-info/dependency_links.txt\n'}
+[6.312923] (hoverbot_driver) StdoutLine: {'line': b'writing entry points to ../../build/hoverbot_driver/hoverbot_driver.egg-info/entry_points.txt\n'}
+[6.314112] (hoverbot_driver) StdoutLine: {'line': b'writing requirements to ../../build/hoverbot_driver/hoverbot_driver.egg-info/requires.txt\n'}
+[6.314959] (hoverbot_driver) StdoutLine: {'line': b'writing top-level names to ../../build/hoverbot_driver/hoverbot_driver.egg-info/top_level.txt\n'}
+[6.324490] (hoverbot_bringup) StdoutLine: {'line': b'running egg_info\n'}
+[6.325780] (hoverbot_driver) StdoutLine: {'line': b"reading manifest file '../../build/hoverbot_driver/hoverbot_driver.egg-info/SOURCES.txt'\n"}
+[6.327725] (hoverbot_bringup) StdoutLine: {'line': b'writing ../../build/hoverbot_bringup/hoverbot_bringup.egg-info/PKG-INFO\n'}
+[6.329586] (hoverbot_bringup) StdoutLine: {'line': b'writing dependency_links to ../../build/hoverbot_bringup/hoverbot_bringup.egg-info/dependency_links.txt\n'}
+[6.330861] (hoverbot_bringup) StdoutLine: {'line': b'writing entry points to ../../build/hoverbot_bringup/hoverbot_bringup.egg-info/entry_points.txt\n'}
+[6.331708] (hoverbot_driver) StdoutLine: {'line': b"writing manifest file '../../build/hoverbot_driver/hoverbot_driver.egg-info/SOURCES.txt'\n"}
+[6.332296] (hoverbot_driver) StdoutLine: {'line': b'running build\n'}
+[6.332910] (hoverbot_driver) StdoutLine: {'line': b'running build_py\n'}
+[6.333248] (hoverbot_bringup) StdoutLine: {'line': b'writing requirements to ../../build/hoverbot_bringup/hoverbot_bringup.egg-info/requires.txt\n'}
+[6.333595] (hoverbot_bringup) StdoutLine: {'line': b'writing top-level names to ../../build/hoverbot_bringup/hoverbot_bringup.egg-info/top_level.txt\n'}
+[6.336684] (hoverbot_driver) StdoutLine: {'line': b'running install\n'}
+[6.338083] (hoverbot_driver) StdoutLine: {'line': b'running install_lib\n'}
+[6.341719] (hoverbot_bringup) StdoutLine: {'line': b"reading manifest file '../../build/hoverbot_bringup/hoverbot_bringup.egg-info/SOURCES.txt'\n"}
+[6.344744] (hoverbot_driver) StdoutLine: {'line': b'running install_data\n'}
+[6.346034] (hoverbot_driver) StdoutLine: {'line': b'running install_egg_info\n'}
+[6.347234] (hoverbot_bringup) StdoutLine: {'line': b"writing manifest file '../../build/hoverbot_bringup/hoverbot_bringup.egg-info/SOURCES.txt'\n"}
+[6.347928] (hoverbot_bringup) StdoutLine: {'line': b'running build\n'}
+[6.348647] (hoverbot_bringup) StdoutLine: {'line': b'running build_py\n'}
+[6.351968] (hoverbot_bringup) StdoutLine: {'line': b'running install\n'}
+[6.352517] (-) TimerEvent: {}
+[6.353671] (hoverbot_bringup) StdoutLine: {'line': b'running install_lib\n'}
+[6.354632] (hoverbot_driver) StdoutLine: {'line': b"removing '/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver-1.0.0-py3.10.egg-info' (and everything under it)\n"}
+[6.356623] (hoverbot_driver) StdoutLine: {'line': b'Copying ../../build/hoverbot_driver/hoverbot_driver.egg-info to /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver-1.0.0-py3.10.egg-info\n'}
+[6.360789] (hoverbot_bringup) StdoutLine: {'line': b'running install_data\n'}
+[6.363545] (hoverbot_driver) StdoutLine: {'line': b'running install_scripts\n'}
+[6.364222] (hoverbot_bringup) StdoutLine: {'line': b'running install_egg_info\n'}
+[6.373598] (hoverbot_bringup) StdoutLine: {'line': b"removing '/home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/lib/python3.10/site-packages/hoverbot_bringup-0.0.1-py3.10.egg-info' (and everything under it)\n"}
+[6.375511] (hoverbot_bringup) StdoutLine: {'line': b'Copying ../../build/hoverbot_bringup/hoverbot_bringup.egg-info to /home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/lib/python3.10/site-packages/hoverbot_bringup-0.0.1-py3.10.egg-info\n'}
+[6.382935] (hoverbot_bringup) StdoutLine: {'line': b'running install_scripts\n'}
+[6.452734] (-) TimerEvent: {}
+[6.456829] (hoverbot_driver) StdoutLine: {'line': b'Installing hoverbot_driver_node script to /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/hoverbot_driver\n'}
+[6.458878] (hoverbot_driver) StdoutLine: {'line': b"writing list of installed files to '/home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/install.log'\n"}
+[6.483132] (hoverbot_bringup) StdoutLine: {'line': b'Installing lidar_manager script to /home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/bin\n'}
+[6.484856] (hoverbot_bringup) StdoutLine: {'line': b'Installing test_lidar_control script to /home/ryan/hoverbot/ros2_ws/install/hoverbot_bringup/bin\n'}
+[6.487554] (hoverbot_bringup) StdoutLine: {'line': b"writing list of installed files to '/home/ryan/hoverbot/ros2_ws/build/hoverbot_bringup/install.log'\n"}
+[6.553197] (-) TimerEvent: {}
+[6.636308] (hoverbot_driver) CommandEnded: {'returncode': 0}
+[6.653383] (-) TimerEvent: {}
+[6.676639] (hoverbot_driver) JobEnded: {'identifier': 'hoverbot_driver', 'rc': 0}
+[6.681472] (hoverbot_bringup) CommandEnded: {'returncode': 0}
+[6.735069] (hoverbot_bringup) JobEnded: {'identifier': 'hoverbot_bringup', 'rc': 0}
+[6.737893] (-) EventReactorShutdown: {}

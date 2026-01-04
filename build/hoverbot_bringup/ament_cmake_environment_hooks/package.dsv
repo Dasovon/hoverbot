@@ -1,0 +1,4 @@
+source;share/hoverbot_bringup/local_setup.bash
+source;share/hoverbot_bringup/local_setup.dsv
+source;share/hoverbot_bringup/local_setup.sh
+source;share/hoverbot_bringup/local_setup.zsh

@@ -1,0 +1,47 @@
+[3.502s] Invoking command in '/home/ryan/hoverbot/ros2_ws/src/hoverbot_driver': PYTHONPATH=/home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/hoverbot_driver build --build-base /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build install --record /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/install.log --single-version-externally-managed install_data
+[4.849s] running egg_info
+[4.852s] creating ../../build/hoverbot_driver/hoverbot_driver.egg-info
+[4.853s] writing ../../build/hoverbot_driver/hoverbot_driver.egg-info/PKG-INFO
+[4.854s] writing dependency_links to ../../build/hoverbot_driver/hoverbot_driver.egg-info/dependency_links.txt
+[4.856s] writing entry points to ../../build/hoverbot_driver/hoverbot_driver.egg-info/entry_points.txt
+[4.856s] writing requirements to ../../build/hoverbot_driver/hoverbot_driver.egg-info/requires.txt
+[4.857s] writing top-level names to ../../build/hoverbot_driver/hoverbot_driver.egg-info/top_level.txt
+[4.858s] writing manifest file '../../build/hoverbot_driver/hoverbot_driver.egg-info/SOURCES.txt'
+[4.870s] reading manifest file '../../build/hoverbot_driver/hoverbot_driver.egg-info/SOURCES.txt'
+[4.874s] writing manifest file '../../build/hoverbot_driver/hoverbot_driver.egg-info/SOURCES.txt'
+[4.876s] running build
+[4.877s] running build_py
+[4.877s] creating /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build
+[4.878s] creating /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build/lib
+[4.878s] creating /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build/lib/hoverbot_driver
+[4.879s] copying hoverbot_driver/__init__.py -> /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build/lib/hoverbot_driver
+[4.880s] copying hoverbot_driver/serial_interface.py -> /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build/lib/hoverbot_driver
+[4.881s] copying hoverbot_driver/differential_drive_controller.py -> /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build/lib/hoverbot_driver
+[4.882s] copying hoverbot_driver/hoverbot_driver_node.py -> /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build/lib/hoverbot_driver
+[4.884s] running install
+[4.886s] running install_lib
+[4.890s] creating /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver
+[4.890s] copying /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build/lib/hoverbot_driver/__init__.py -> /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver
+[4.891s] copying /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build/lib/hoverbot_driver/serial_interface.py -> /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver
+[4.893s] copying /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build/lib/hoverbot_driver/differential_drive_controller.py -> /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver
+[4.894s] copying /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build/lib/hoverbot_driver/hoverbot_driver_node.py -> /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver
+[4.897s] byte-compiling /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver/__init__.py to __init__.cpython-310.pyc
+[4.900s] byte-compiling /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver/serial_interface.py to serial_interface.cpython-310.pyc
+[4.905s] byte-compiling /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver/differential_drive_controller.py to differential_drive_controller.cpython-310.pyc
+[4.909s] byte-compiling /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver/hoverbot_driver_node.py to hoverbot_driver_node.cpython-310.pyc
+[4.916s] running install_data
+[4.917s] creating /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/share/ament_index
+[4.918s] creating /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/share/ament_index/resource_index
+[4.918s] creating /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/share/ament_index/resource_index/packages
+[4.919s] copying resource/hoverbot_driver -> /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/share/ament_index/resource_index/packages
+[4.933s] copying package.xml -> /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/share/hoverbot_driver
+[4.933s] creating /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/share/hoverbot_driver/launch
+[4.933s] copying launch/hoverbot_driver.launch.py -> /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/share/hoverbot_driver/launch
+[4.934s] creating /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/share/hoverbot_driver/config
+[4.934s] copying config/hoverbot_driver.yaml -> /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/share/hoverbot_driver/config
+[4.934s] running install_egg_info
+[4.935s] Copying ../../build/hoverbot_driver/hoverbot_driver.egg-info to /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages/hoverbot_driver-1.0.0-py3.10.egg-info
+[4.936s] running install_scripts
+[5.018s] Installing hoverbot_driver_node script to /home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/hoverbot_driver
+[5.019s] writing list of installed files to '/home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/install.log'
+[5.150s] Invoked command in '/home/ryan/hoverbot/ros2_ws/src/hoverbot_driver' returned '0': PYTHONPATH=/home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/ryan/hoverbot/ros2_ws/install/hoverbot_driver/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/hoverbot_driver build --build-base /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/build install --record /home/ryan/hoverbot/ros2_ws/build/hoverbot_driver/install.log --single-version-externally-managed install_data
