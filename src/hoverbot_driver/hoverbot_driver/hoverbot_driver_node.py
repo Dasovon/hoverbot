@@ -182,12 +182,18 @@ class HoverBotDriverNode(Node):
         if not success:
             self.get_logger().error("Failed to send command to hoverboard")
         
-        # Read feedback telemetry
-        feedback = self.serial.read_feedback()
+        # Read feedback telemetry (try multiple times if needed)
+        feedback = None
+        for _ in range(3):  # Try up to 3 times
+            feedback = self.serial.read_feedback()
+            if feedback is not None:
+                break
+            time.sleep(0.001)  # Wait 1ms between attempts
         
         if feedback is not None:
             # Update odometry from wheel speeds
-            self.update_odometry(feedback.speed_l_rpm, feedback.speed_r_rpm)
+            # NOTE: Right wheel RPM is negated because firmware reports it backwards
+            self.update_odometry(feedback.speed_l_rpm, -feedback.speed_r_rpm)
             
             # Publish diagnostics every 10 cycles (5Hz)
             if self.serial.rx_count % 10 == 0:
@@ -201,7 +207,7 @@ class HoverBotDriverNode(Node):
         
         Args:
             rpm_left: Left wheel speed in RPM
-            rpm_right: Right wheel speed in RPM
+            rpm_right: Right wheel speed in RPM (already corrected for sign)
         """
         # Get current time
         current_time = self.get_clock().now()
