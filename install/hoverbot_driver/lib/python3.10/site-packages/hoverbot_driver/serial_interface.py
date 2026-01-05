@@ -71,6 +71,9 @@ class HoverboardSerialInterface:
         self.checksum_errors = 0
         self.framing_errors = 0
         
+        # Sync buffer for finding start frame
+        self.sync_buffer = bytearray()
+        
     def connect(self) -> bool:
         """
         Open serial connection to hoverboard.
@@ -90,6 +93,7 @@ class HoverboardSerialInterface:
             # Flush any stale data
             self.serial.reset_input_buffer()
             self.serial.reset_output_buffer()
+            self.sync_buffer.clear()
             return True
         except serial.SerialException as e:
             print(f"Failed to open serial port {self.port}: {e}")
@@ -170,6 +174,7 @@ class HoverboardSerialInterface:
         Read telemetry feedback from hoverboard.
         
         Feedback is sent at 100Hz by firmware. This is a non-blocking read.
+        Uses byte-by-byte scanning to find start frame and synchronize.
         
         Returns:
             HoverboardFeedback object if valid packet received, None otherwise
@@ -178,50 +183,72 @@ class HoverboardSerialInterface:
             return None
         
         try:
-            # Check if data available
-            if self.serial.in_waiting < self.FEEDBACK_PACKET_SIZE:
+            # Read available bytes into sync buffer
+            available = self.serial.in_waiting
+            if available > 0:
+                new_bytes = self.serial.read(available)
+                self.sync_buffer.extend(new_bytes)
+            
+            # Keep buffer manageable
+            if len(self.sync_buffer) > 200:
+                self.sync_buffer = self.sync_buffer[-100:]
+            
+            # Need at least 18 bytes to check for a packet
+            if len(self.sync_buffer) < self.FEEDBACK_PACKET_SIZE:
                 return None
             
-            # Read packet
-            data = self.serial.read(self.FEEDBACK_PACKET_SIZE)
-            if len(data) != self.FEEDBACK_PACKET_SIZE:
-                self.framing_errors += 1
-                return None
+            # Scan for start frame (0xABCD in little-endian = 0xCD 0xAB)
+            for i in range(len(self.sync_buffer) - self.FEEDBACK_PACKET_SIZE + 1):
+                # Check if we found start frame
+                if self.sync_buffer[i] == 0xCD and self.sync_buffer[i+1] == 0xAB:
+                    # Extract potential packet
+                    packet_data = bytes(self.sync_buffer[i:i+self.FEEDBACK_PACKET_SIZE])
+                    
+                    # Try to unpack and validate
+                    try:
+                        unpacked = struct.unpack('<HhhhhhhHH', packet_data)
+                        start, cmd1, cmd2, speed_r, speed_l, bat_v, temp, led, rx_checksum = unpacked
+                        
+                        # Validate start frame (redundant but safe)
+                        if start != self.START_FRAME:
+                            continue
+                        
+                        # Validate checksum
+                        calc_checksum = start
+                        for value in unpacked[1:-1]:
+                            calc_checksum ^= (value & 0xFFFF)
+                        calc_checksum &= 0xFFFF
+                        
+                        if calc_checksum == rx_checksum:
+                            # Valid packet! Remove from buffer including this packet
+                            self.sync_buffer = self.sync_buffer[i+self.FEEDBACK_PACKET_SIZE:]
+                            self.rx_count += 1
+                            
+                            return HoverboardFeedback(
+                                cmd1=cmd1,
+                                cmd2=cmd2,
+                                speed_r_rpm=speed_r,
+                                speed_l_rpm=speed_l,
+                                bat_voltage=bat_v,
+                                board_temp=temp,
+                                led=led,
+                                timestamp=time.time()
+                            )
+                        else:
+                            # Checksum failed - keep searching
+                            self.checksum_errors += 1
+                            
+                    except struct.error:
+                        # Unpacking failed - keep searching
+                        self.framing_errors += 1
             
-            # Unpack (little-endian: <HhhhhhhHH)
-            # Format: start, cmd1, cmd2, speedR, speedL, batVolt, temp, led, checksum
-            unpacked = struct.unpack('<HhhhhhhHH', data)
+            # No valid packet found in buffer
+            # Remove processed bytes but keep last 17 in case start frame spans boundary
+            if len(self.sync_buffer) > 17:
+                self.sync_buffer = self.sync_buffer[-(self.FEEDBACK_PACKET_SIZE-1):]
             
-            start, cmd1, cmd2, speed_r, speed_l, bat_v, temp, led, rx_checksum = unpacked
-            
-            # Validate start frame
-            if start != self.START_FRAME:
-                self.framing_errors += 1
-                return None
-            
-            # Validate checksum (XOR of all fields except checksum itself)
-            calc_checksum = start
-            for value in unpacked[1:-1]:  # Skip start (already included) and checksum
-                calc_checksum ^= (value & 0xFFFF)
-            calc_checksum &= 0xFFFF
-            
-            if calc_checksum != rx_checksum:
-                self.checksum_errors += 1
-                return None
-            
-            # Valid packet
-            self.rx_count += 1
-            return HoverboardFeedback(
-                cmd1=cmd1,
-                cmd2=cmd2,
-                speed_r_rpm=speed_r,
-                speed_l_rpm=speed_l,
-                bat_voltage=bat_v,
-                board_temp=temp,
-                led=led,
-                timestamp=time.time()
-            )
-            
+            return None
+                
         except serial.SerialException as e:
             print(f"Serial read error: {e}")
             return None
