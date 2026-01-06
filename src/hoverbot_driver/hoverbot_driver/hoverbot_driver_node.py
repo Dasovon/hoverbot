@@ -89,7 +89,7 @@ class HoverBotDriverNode(Node):
         # Publishers
         self.odom_pub = self.create_publisher(Odometry, 'odom', 10)
         self.diag_pub = self.create_publisher(DiagnosticArray, '/diagnostics', 10)
-        self.activity_pub = self.create_publisher(Bool, '/robot_active', 10) 
+        self.activity_pub = self.create_publisher(Bool, '/robot_active', 10)
 
         # Activity message
         self.activity_msg = Bool() 
@@ -189,12 +189,12 @@ class HoverBotDriverNode(Node):
             if feedback is not None:
                 break
             time.sleep(0.001)  # Wait 1ms between attempts
-        
+
         if feedback is not None:
             # Update odometry from wheel speeds
             # NOTE: Right wheel RPM is negated because firmware reports it backwards
             self.update_odometry(feedback.speed_l_rpm, -feedback.speed_r_rpm)
-            
+
             # Publish diagnostics every 10 cycles (5Hz)
             if self.serial.rx_count % 10 == 0:
                 self.publish_diagnostics(feedback)
@@ -390,6 +390,6 @@ def main(args=None):
         if rclpy.ok():
             rclpy.shutdown()
 
-
+            
 if __name__ == '__main__':
     main()
