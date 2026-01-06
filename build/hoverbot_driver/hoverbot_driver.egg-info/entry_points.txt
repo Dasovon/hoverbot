@@ -1,3 +1,0 @@
-[console_scripts]
-hoverbot_driver_node = hoverbot_driver.hoverbot_driver_node:main
-
