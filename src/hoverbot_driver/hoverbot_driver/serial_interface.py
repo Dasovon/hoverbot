@@ -172,10 +172,14 @@ class HoverboardSerialInterface:
     def read_feedback(self) -> Optional[HoverboardFeedback]:
         """
         Read telemetry feedback from hoverboard.
-        
+
         Feedback is sent at 100Hz by firmware. This is a non-blocking read.
-        Uses byte-by-byte scanning to find start frame and synchronize.
-        
+
+        CRITICAL: Uses byte-by-byte scanning to find start frame and synchronize.
+        This is necessary because when we open the serial port, the firmware is
+        already mid-stream sending packets. We need to scan for the start frame
+        (0xCD 0xAB) to align to packet boundaries before we can reliably decode.
+
         Returns:
             HoverboardFeedback object if valid packet received, None otherwise
         """
