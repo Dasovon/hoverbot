@@ -30,21 +30,6 @@
 - **ROS_LOCALHOST_ONLY**: 0 on both machines
 - **Communication**: Dev machine can see Pi topics/TF
 
-### BNO055 IMU (COMPLETE) ✅
-- **Hardware**: Detected at I2C address 0x28 on `/dev/i2c-1`
-- **Driver**: Custom ROS2 node using Adafruit CircuitPython library
-- **Package**: `bno055_driver`
-- **Topics**:
-  - `/imu/data` (50Hz) - Orientation (quaternion), angular velocity, linear acceleration
-  - `/imu/mag` (50Hz) - Magnetometer data
-  - `/imu/temp` (1Hz) - Sensor temperature
-- **Launch**: `ros2 launch bno055_driver bno055.launch.py`
-- **Status**: Working perfectly with on-chip sensor fusion!
-- **Files**:
-  - `src/bno055_driver/bno055_driver/bno055_node.py` - Main node
-  - `src/bno055_driver/launch/bno055.launch.py` - Launch file
-  - `src/bno055_driver/README.md` - Complete documentation
-
 ### GitHub Repository (SYNCED)
 - **URL**: github.com/Dasovon/hoverbot
 - **Branch**: main (stable), claude/hoverbot-analysis-Ctcui (analysis)
@@ -65,6 +50,13 @@
 ---
 
 ## 🔧 In Progress / Broken
+
+### BNO055 IMU (BROKEN)
+- **Hardware**: Detected at I2C address 0x28 (40 decimal) on `/dev/i2c-1`
+- **Driver**: `flynneva/bno055` package installed and built
+- **Issue**: Node configures successfully but freezes - no topics published
+- **Launch Command**: `ros2 run bno055 bno055 --ros-args -p connection_type:=i2c -p i2c_bus:=1 -p i2c_addr:=40`
+- **Next Steps**: Try alternative driver or custom Python implementation
 
 ### Cameras (NOT STARTED)
 - RealSense D435 - not configured
@@ -135,59 +127,7 @@
 
 ## 📝 Recent Changes
 
-### 2026-01-05: Telemetry Fix & IMU Integration
-
-#### Hoverboard Driver Fixes
-1. **Fixed telemetry frame synchronization**
-   - Implemented byte-by-byte start frame scanning in `serial_interface.py`
-   - Added sync buffer for packet boundary handling (lines ~186-250)
-   - Scans for start frame `0xCD 0xAB` (little-endian 0xABCD)
-   - Validates with checksum verification
-   - Result: 100% telemetry reception at 100Hz from firmware
-   - File: `src/hoverbot_driver/hoverbot_driver/serial_interface.py`
-
-2. **Fixed odometry calculation**
-   - Root cause: Hoverboard firmware reports right wheel RPM as negative
-   - Solution: Negate right wheel RPM in odometry update
-   - File: `src/hoverbot_driver/hoverbot_driver/hoverbot_driver_node.py:196`
-   - Code: `self.update_odometry(feedback.speed_l_rpm, -feedback.speed_r_rpm)`
-   - Result: Odometry publishing at 50Hz, RViz shows correct forward movement
-
-#### BNO055 IMU Driver Integration
-1. **Abandoned broken driver**
-   - `flynneva/bno055` ROS2 driver hung on startup
-   - Node would configure but freeze before publishing topics
-   - Hardware verified working with direct I2C Python test
-
-2. **Created custom driver package**
-   - Package: `bno055_driver`
-   - Uses Adafruit CircuitPython BNO055 library (proven, reliable)
-   - Publishes standard ROS2 sensor messages
-   - Working at 50Hz for IMU/mag, 1Hz for temperature
-   - Topics: `/imu/data`, `/imu/mag`, `/imu/temp`
-   - Files created:
-     - `src/bno055_driver/bno055_driver/bno055_node.py` - Main node
-     - `src/bno055_driver/launch/bno055.launch.py` - Launch file
-     - `src/bno055_driver/README.md` - Complete documentation
-
-#### Repository Cleanup
-1. **Added .gitignore**
-   - Excluded `build/`, `install/`, `log/` directories
-   - Removed 60+ tracked build artifacts from git
-   - Synced both dev and Pi machines
-
-2. **Git cleanup**
-   - Removed build artifacts with `git rm -r --cached`
-   - Both machines now have clean working trees
-
-#### Code Quality
-1. **Professional analysis complete** (from earlier in session)
-   - 5 comprehensive documentation files added to `docs/analysis/`
-   - Sandi Metz principles assessment (B+ grade)
-   - 4 optional refactoring proposals documented
-   - Critical sections identified and protected
-
-### 2026-01-05: Code Analysis Complete (Earlier Session)
+### 2026-01-05: Code Analysis Complete
 1. **Comprehensive Sandi Metz analysis performed**
    - Analyzed all 3 core Python modules (837 lines total)
    - Identified improvement opportunities
@@ -244,13 +184,17 @@
    - See: `docs/analysis/ANALYSIS_REPORT.md`
 
 ### Hardware Integration (CURRENT PRIORITIES)
-1. **Add Robot Description** (NEW TOP PRIORITY)
-   - Create URDF for RViz visualization
-   - Define robot geometry and transforms
-   - Include all sensor frames (base_link, imu_link, laser_link, camera_link)
+1. **Fix BNO055 IMU**
+   - Try alternative driver packages
+   - Consider custom Python implementation using Adafruit library
+   - Expected topics: `/imu/data`, `/imu/mag`, `/imu/temp`
+
+2. **Add Robot Description**
+   - Create minimal URDF for RViz visualization
+   - Define robot dimensions, wheel positions
    - Package: `hoverbot_description`
 
-2. **Camera Integration**
+3. **Camera Integration**
    - RealSense D435 setup
    - ELP 2MP camera setup
    - Test depth/RGB streaming
@@ -286,13 +230,6 @@ ros2 topic pub --rate 10 /cmd_vel geometry_msgs/Twist "{linear: {x: 0.2}, angula
 ```bash
 # On Pi
 ros2 launch rplidar_ros rplidar_a1_launch.py serial_port:=/dev/ttyUSB1
-```
-
-### Start BNO055 IMU
-```bash
-# On Pi
-source ~/hoverbot/ros2_ws/install/setup.bash
-ros2 launch bno055_driver bno055.launch.py
 ```
 
 ### Check Topics
