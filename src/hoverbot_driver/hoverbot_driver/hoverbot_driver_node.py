@@ -192,10 +192,7 @@ class HoverBotDriverNode(Node):
         
         if feedback is not None:
             # Update odometry from wheel speeds
-            # CRITICAL: Right wheel RPM must be negated - the hoverboard firmware
-            # reports the right wheel RPM as negative even when spinning forward.
-            # This is a firmware quirk, not a bug. The negation here corrects it.
-            # DO NOT remove this negation - odometry will be backwards if you do!
+            # NOTE: Right wheel RPM is negated because firmware reports it backwards
             self.update_odometry(feedback.speed_l_rpm, -feedback.speed_r_rpm)
             
             # Publish diagnostics every 10 cycles (5Hz)

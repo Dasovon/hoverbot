@@ -1,18 +1,7 @@
 #!/usr/bin/env python3
 """
-BNO055 IMU Driver Node using Adafruit CircuitPython library.
-
-This driver was created as a replacement for the flynneva/bno055 ROS2 package,
-which was found to hang on startup. Uses the proven Adafruit CircuitPython
-library for reliable I2C communication with the BNO055 sensor.
-
-Publishes:
-  - sensor_msgs/Imu: Orientation (quaternion), angular velocity, linear acceleration
-  - sensor_msgs/MagneticField: Magnetic field vector
-  - sensor_msgs/Temperature: Sensor temperature
-
-The BNO055 performs on-chip sensor fusion, providing accurate absolute
-orientation without external algorithms.
+BNO055 IMU Driver Node using Adafruit CircuitPython library
+Publishes sensor_msgs/Imu, MagneticField, and Temperature
 """
 
 import rclpy
@@ -23,26 +12,14 @@ import board
 import adafruit_bno055
 from math import radians
 
-# Constants
-DEFAULT_FRAME_ID = 'imu_link'
-DEFAULT_PUBLISH_RATE = 50.0  # Hz
-TEMPERATURE_PUBLISH_RATE = 1.0  # Hz (temperature changes slowly)
-TEMPERATURE_WINDOW_NS = 20_000_000  # 20ms window for ~1Hz publishing
-COVARIANCE_ORIENTATION = 0.01
-COVARIANCE_ANGULAR_VELOCITY = 0.01
-COVARIANCE_LINEAR_ACCELERATION = 0.01
-COVARIANCE_MAGNETIC_FIELD = 0.01
-TEMPERATURE_VARIANCE = 0.5  # Approximate temperature sensor variance
-MICROTESLA_TO_TESLA = 1e-6
-
 
 class BNO055Node(Node):
     def __init__(self):
         super().__init__('bno055_imu')
         
         # Declare parameters
-        self.declare_parameter('frame_id', DEFAULT_FRAME_ID)
-        self.declare_parameter('publish_rate', DEFAULT_PUBLISH_RATE)
+        self.declare_parameter('frame_id', 'imu_link')
+        self.declare_parameter('publish_rate', 50.0)  # Hz
         
         # Get parameters
         self.frame_id = self.get_parameter('frame_id').value
@@ -79,10 +56,9 @@ class BNO055Node(Node):
             
             # Publish magnetometer data
             self.publish_magnetometer(stamp)
-
-            # Publish temperature at ~1Hz (temperature changes slowly, no need for 50Hz)
-            # Simple rate limiting: publish only when nanoseconds mod 1 second < TEMPERATURE_WINDOW_NS
-            if self.get_clock().now().nanoseconds % 1_000_000_000 < TEMPERATURE_WINDOW_NS:
+            
+            # Publish temperature (at lower rate)
+            if self.get_clock().now().nanoseconds % 1_000_000_000 < 20_000_000:  # ~1Hz
                 self.publish_temperature(stamp)
             
         except Exception as e:
@@ -103,9 +79,9 @@ class BNO055Node(Node):
             imu_msg.orientation.y = quat[2]
             imu_msg.orientation.z = quat[3]
             # Orientation covariance (adjust based on calibration)
-            imu_msg.orientation_covariance[0] = COVARIANCE_ORIENTATION
-            imu_msg.orientation_covariance[4] = COVARIANCE_ORIENTATION
-            imu_msg.orientation_covariance[8] = COVARIANCE_ORIENTATION
+            imu_msg.orientation_covariance[0] = 0.01
+            imu_msg.orientation_covariance[4] = 0.01
+            imu_msg.orientation_covariance[8] = 0.01
         else:
             # No valid orientation data
             imu_msg.orientation_covariance[0] = -1
@@ -117,9 +93,9 @@ class BNO055Node(Node):
             imu_msg.angular_velocity.y = gyro[1]
             imu_msg.angular_velocity.z = gyro[2]
             # Gyro covariance
-            imu_msg.angular_velocity_covariance[0] = COVARIANCE_ANGULAR_VELOCITY
-            imu_msg.angular_velocity_covariance[4] = COVARIANCE_ANGULAR_VELOCITY
-            imu_msg.angular_velocity_covariance[8] = COVARIANCE_ANGULAR_VELOCITY
+            imu_msg.angular_velocity_covariance[0] = 0.01
+            imu_msg.angular_velocity_covariance[4] = 0.01
+            imu_msg.angular_velocity_covariance[8] = 0.01
         else:
             imu_msg.angular_velocity_covariance[0] = -1
         
@@ -130,9 +106,9 @@ class BNO055Node(Node):
             imu_msg.linear_acceleration.y = accel[1]
             imu_msg.linear_acceleration.z = accel[2]
             # Accel covariance
-            imu_msg.linear_acceleration_covariance[0] = COVARIANCE_LINEAR_ACCELERATION
-            imu_msg.linear_acceleration_covariance[4] = COVARIANCE_LINEAR_ACCELERATION
-            imu_msg.linear_acceleration_covariance[8] = COVARIANCE_LINEAR_ACCELERATION
+            imu_msg.linear_acceleration_covariance[0] = 0.01
+            imu_msg.linear_acceleration_covariance[4] = 0.01
+            imu_msg.linear_acceleration_covariance[8] = 0.01
         else:
             imu_msg.linear_acceleration_covariance[0] = -1
         
@@ -148,14 +124,14 @@ class BNO055Node(Node):
         mag = self.sensor.magnetic
         if mag[0] is not None:
             # Convert from µT to T (Tesla)
-            mag_msg.magnetic_field.x = mag[0] * MICROTESLA_TO_TESLA
-            mag_msg.magnetic_field.y = mag[1] * MICROTESLA_TO_TESLA
-            mag_msg.magnetic_field.z = mag[2] * MICROTESLA_TO_TESLA
-
+            mag_msg.magnetic_field.x = mag[0] * 1e-6
+            mag_msg.magnetic_field.y = mag[1] * 1e-6
+            mag_msg.magnetic_field.z = mag[2] * 1e-6
+            
             # Magnetometer covariance
-            mag_msg.magnetic_field_covariance[0] = COVARIANCE_MAGNETIC_FIELD
-            mag_msg.magnetic_field_covariance[4] = COVARIANCE_MAGNETIC_FIELD
-            mag_msg.magnetic_field_covariance[8] = COVARIANCE_MAGNETIC_FIELD
+            mag_msg.magnetic_field_covariance[0] = 0.01
+            mag_msg.magnetic_field_covariance[4] = 0.01
+            mag_msg.magnetic_field_covariance[8] = 0.01
         
         self.mag_pub.publish(mag_msg)
     
@@ -169,7 +145,7 @@ class BNO055Node(Node):
         temp = self.sensor.temperature
         if temp is not None:
             temp_msg.temperature = float(temp)
-            temp_msg.variance = TEMPERATURE_VARIANCE
+            temp_msg.variance = 0.5  # Approximate
         
         self.temp_pub.publish(temp_msg)
 
